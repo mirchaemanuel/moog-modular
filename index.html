@@ -787,12 +787,10 @@
         <button class="demo-btn" data-demo="space">SPACE</button>
         <button class="demo-btn" data-demo="italo">ITALO</button>
         <button class="demo-btn" data-demo="blade">BLADE RUNNER</button>
-        <button class="demo-btn" data-demo="axelf">AXEL F</button>
         <button class="demo-btn" data-demo="bluemonday">BLUE MONDAY</button>
         <button class="demo-btn" data-demo="popcorn">POPCORN</button>
         <button class="demo-btn" data-demo="stranger">STRANGER</button>
-        <button class="demo-btn" data-demo="toto">AFRICA</button>
-        <button class="demo-btn" data-demo="sweetdreams">SWEET DREAMS</button>
+        <button class="demo-btn" data-demo="daftpunk">DAFT PUNK</button>
         <button class="demo-btn stop-btn" id="stop-demo">STOP</button>
         <span class="demo-label" style="margin-left: 20px;">REC:</span>
         <button class="demo-btn rec-btn" id="rec-btn">🔴 REC</button>
@@ -2361,37 +2359,6 @@
                 ],
                 loopLength: 16000
             },
-            axelf: {
-                preset: 'lead',
-                bpm: 120,
-                loop: true,
-                pattern: [
-                    // Axel F theme - Beverly Hills Cop
-                    { note: 65, time: 0, duration: 150 },      // F4
-                    { note: 68, time: 200, duration: 150 },    // Ab4
-                    { note: 65, time: 400, duration: 100 },    // F4
-                    { note: 65, time: 550, duration: 100 },    // F4
-                    { note: 70, time: 700, duration: 150 },    // Bb4
-                    { note: 65, time: 900, duration: 150 },    // F4
-                    { note: 63, time: 1100, duration: 150 },   // Eb4
-                    { note: 65, time: 1300, duration: 150 },   // F4
-                    { note: 72, time: 1500, duration: 150 },   // C5
-                    { note: 65, time: 1700, duration: 100 },   // F4
-                    { note: 65, time: 1850, duration: 100 },   // F4
-                    { note: 73, time: 2000, duration: 150 },   // Db5
-                    { note: 72, time: 2200, duration: 150 },   // C5
-                    { note: 68, time: 2400, duration: 150 },   // Ab4
-                    { note: 65, time: 2600, duration: 150 },   // F4
-                    { note: 72, time: 2800, duration: 150 },   // C5
-                    { note: 77, time: 3000, duration: 150 },   // F5
-                    { note: 65, time: 3200, duration: 100 },   // F4
-                    { note: 63, time: 3350, duration: 100 },   // Eb4
-                    { note: 63, time: 3500, duration: 100 },   // Eb4
-                    { note: 60, time: 3650, duration: 150 },   // C4
-                    { note: 67, time: 3850, duration: 250 },   // G4
-                ],
-                loopLength: 4200
-            },
             bluemonday: {
                 preset: 'bass',
                 bpm: 130,
@@ -2477,53 +2444,11 @@
                 ],
                 loopLength: 6000
             },
-            toto: {
-                preset: 'brass',
-                bpm: 116,
-                loop: true,
-                pattern: [
-                    // Africa - Toto style synth brass
-                    { note: 69, time: 0, duration: 300 },      // A4
-                    { note: 67, time: 350, duration: 150 },    // G4
-                    { note: 64, time: 550, duration: 400 },    // E4
-                    { note: 67, time: 1000, duration: 200 },   // G4
-                    { note: 69, time: 1250, duration: 200 },   // A4
-                    { note: 67, time: 1500, duration: 400 },   // G4
-                    // Second phrase
-                    { note: 69, time: 2070, duration: 300 },   // A4
-                    { note: 67, time: 2420, duration: 150 },   // G4
-                    { note: 64, time: 2620, duration: 400 },   // E4
-                    { note: 62, time: 3070, duration: 200 },   // D4
-                    { note: 64, time: 3320, duration: 200 },   // E4
-                    { note: 67, time: 3570, duration: 500 },   // G4
-                ],
-                loopLength: 4140
-            },
-            sweetdreams: {
-                preset: 'bass',
-                bpm: 126,
-                loop: true,
-                pattern: [
-                    // Sweet Dreams - Eurythmics arpeggio
-                    { note: 48, time: 0, duration: 100 },      // C3
-                    { note: 60, time: 119, duration: 100 },    // C4
-                    { note: 55, time: 238, duration: 100 },    // G3
-                    { note: 60, time: 357, duration: 100 },    // C4
-                    { note: 48, time: 476, duration: 100 },    // C3
-                    { note: 60, time: 595, duration: 100 },    // C4
-                    { note: 55, time: 714, duration: 100 },    // G3
-                    { note: 60, time: 833, duration: 100 },    // C4
-                    // Variation
-                    { note: 46, time: 952, duration: 100 },    // Bb2
-                    { note: 58, time: 1071, duration: 100 },   // Bb3
-                    { note: 53, time: 1190, duration: 100 },   // F3
-                    { note: 58, time: 1309, duration: 100 },   // Bb3
-                    { note: 46, time: 1428, duration: 100 },   // Bb2
-                    { note: 58, time: 1547, duration: 100 },   // Bb3
-                    { note: 53, time: 1666, duration: 100 },   // F3
-                    { note: 58, time: 1785, duration: 100 },   // Bb3
-                ],
-                loopLength: 1904
+            daftpunk: {
+                preset: 'lead',
+                bpm: 113,
+                loop: false,
+                file: 'daft_punk.txt'  // Load full song from file
             }
         };
 
@@ -2547,7 +2472,22 @@
                 }
             });
 
-            // Schedule notes
+            // If demo has external file, load and play it
+            if (demo.file) {
+                fetch(demo.file)
+                    .then(response => response.text())
+                    .then(text => {
+                        if (currentDemo !== name) return;
+                        const song = parseSongText(text);
+                        if (song && song.notes.length > 0) {
+                            playDemoFromNotes(name, song.notes, demo.loop, demo.loopLength);
+                        }
+                    })
+                    .catch(err => console.error('Failed to load demo file:', err));
+                return;
+            }
+
+            // Schedule notes from inline pattern
             function schedulePattern() {
                 const startTime = audioCtx.currentTime * 1000;
 
@@ -2580,6 +2520,47 @@
             }
 
             schedulePattern();
+        }
+
+        // Helper function to play demo from parsed notes array
+        function playDemoFromNotes(name, notes, loop, loopLength) {
+            function scheduleNotes() {
+                notes.forEach(event => {
+                    const noteOnTimeout = setTimeout(() => {
+                        if (currentDemo !== name) return;
+                        noteOn(event.note);
+                        const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                        if (keyEl) keyEl.classList.add('pressed');
+                    }, event.time);
+
+                    const noteOffTimeout = setTimeout(() => {
+                        if (currentDemo !== name) return;
+                        noteOff(event.note);
+                        const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                        if (keyEl) keyEl.classList.remove('pressed');
+                    }, event.time + event.duration);
+
+                    demoTimeouts.push(noteOnTimeout, noteOffTimeout);
+                });
+
+                if (loop && loopLength) {
+                    demoInterval = setTimeout(() => {
+                        if (currentDemo === name) {
+                            scheduleNotes();
+                        }
+                    }, loopLength);
+                } else {
+                    // Auto-stop after song ends
+                    const maxTime = Math.max(...notes.map(n => n.time + n.duration));
+                    demoInterval = setTimeout(() => {
+                        if (currentDemo === name) {
+                            stopDemo();
+                        }
+                    }, maxTime + 500);
+                }
+            }
+
+            scheduleNotes();
         }
 
         function stopDemo() {
