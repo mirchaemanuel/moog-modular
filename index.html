@@ -762,6 +762,9 @@
         <button class="demo-btn stop-btn" id="stop-demo">STOP</button>
         <span class="demo-label" style="margin-left: 20px;">REC:</span>
         <button class="demo-btn rec-btn" id="rec-btn">🔴 REC</button>
+        <span class="demo-label" style="margin-left: 20px;">SONG:</span>
+        <button class="demo-btn" id="import-song-btn">📥 IMPORT</button>
+        <button class="demo-btn" id="play-song-btn">▶️ PLAY</button>
     </div>
 
     <div class="synth-container">
@@ -1477,6 +1480,9 @@
 
             if (voices.has(note)) return;
 
+            // Record note if recording
+            recordNoteOn(note);
+
             const frequency = 440 * Math.pow(2, (note - 69) / 12);
             const voice = createVoice(frequency, velocity);
             voices.set(note, voice);
@@ -1489,6 +1495,9 @@
         }
 
         function noteOff(note) {
+            // Record note off if recording
+            recordNoteOff(note);
+
             const voice = voices.get(note);
             if (voice) {
                 releaseVoice(voice);
@@ -2586,6 +2595,224 @@
             document.getElementById('stop-demo').addEventListener('click', stopDemo);
         }
 
+        // Note name conversion
+        const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+        function midiToNoteName(midi) {
+            const octave = Math.floor(midi / 12) - 1;
+            const noteIndex = midi % 12;
+            return NOTE_NAMES[noteIndex] + octave;
+        }
+
+        function noteNameToMidi(noteName) {
+            const match = noteName.match(/^([A-G]#?)(-?\d+)$/);
+            if (!match) return null;
+            const note = match[1];
+            const octave = parseInt(match[2]);
+            const noteIndex = NOTE_NAMES.indexOf(note);
+            if (noteIndex === -1) return null;
+            return (octave + 1) * 12 + noteIndex;
+        }
+
+        // Song Recording (notes)
+        let isRecordingSong = false;
+        let songRecordingStart = 0;
+        let recordedNotes = [];
+        let activeNoteStarts = new Map(); // Track when each note started
+        let currentSongPreset = 'init';
+
+        function startSongRecording() {
+            isRecordingSong = true;
+            songRecordingStart = Date.now();
+            recordedNotes = [];
+            activeNoteStarts.clear();
+            // Remember current preset (find which one is closest to current state)
+            currentSongPreset = 'init';
+        }
+
+        function stopSongRecording() {
+            isRecordingSong = false;
+            // Close any notes that are still playing
+            activeNoteStarts.forEach((startTime, note) => {
+                const duration = Date.now() - startTime;
+                const time = startTime - songRecordingStart;
+                recordedNotes.push({ note, time, duration });
+            });
+            activeNoteStarts.clear();
+        }
+
+        function recordNoteOn(note) {
+            if (!isRecordingSong) return;
+            activeNoteStarts.set(note, Date.now());
+        }
+
+        function recordNoteOff(note) {
+            if (!isRecordingSong) return;
+            const startTime = activeNoteStarts.get(note);
+            if (startTime) {
+                const duration = Date.now() - startTime;
+                const time = startTime - songRecordingStart;
+                recordedNotes.push({ note, time, duration });
+                activeNoteStarts.delete(note);
+            }
+        }
+
+        function generateSongText() {
+            // Sort notes by time
+            const sorted = [...recordedNotes].sort((a, b) => a.time - b.time);
+
+            const lines = [
+                '# Moog Modular Song',
+                `# preset: ${currentSongPreset}`,
+                `# date: ${new Date().toISOString().split('T')[0]}`,
+                `# notes: ${sorted.length}`,
+                ''
+            ];
+
+            sorted.forEach(n => {
+                lines.push(`${n.time}:${midiToNoteName(n.note)}:${n.duration}`);
+            });
+
+            return lines.join('\n');
+        }
+
+        function parseSongText(text) {
+            const lines = text.split('\n');
+            const song = {
+                preset: 'init',
+                notes: []
+            };
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (!line || line.startsWith('#')) {
+                    // Check for preset in comments
+                    const presetMatch = line.match(/^#\s*preset:\s*(\w+)/i);
+                    if (presetMatch) {
+                        song.preset = presetMatch[1];
+                    }
+                    return;
+                }
+
+                const parts = line.split(':');
+                if (parts.length >= 3) {
+                    const time = parseInt(parts[0]);
+                    const noteName = parts[1];
+                    const duration = parseInt(parts[2]);
+                    const midi = noteNameToMidi(noteName);
+
+                    if (!isNaN(time) && midi !== null && !isNaN(duration)) {
+                        song.notes.push({ note: midi, time, duration });
+                    }
+                }
+            });
+
+            return song;
+        }
+
+        // Imported song storage
+        let importedSong = null;
+        let importedSongTimeouts = [];
+
+        function playImportedSong() {
+            if (!importedSong || importedSong.notes.length === 0) {
+                alert('No song imported! Use IMPORT first.');
+                return;
+            }
+
+            stopImportedSong();
+            initAudio();
+
+            // Load preset if specified
+            if (importedSong.preset && presets[importedSong.preset]) {
+                loadPreset(importedSong.preset);
+            }
+
+            importedSong.notes.forEach(event => {
+                const noteOnTimeout = setTimeout(() => {
+                    noteOn(event.note);
+                    const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                    if (keyEl) keyEl.classList.add('pressed');
+                }, event.time);
+
+                const noteOffTimeout = setTimeout(() => {
+                    noteOff(event.note);
+                    const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                    if (keyEl) keyEl.classList.remove('pressed');
+                }, event.time + event.duration);
+
+                importedSongTimeouts.push(noteOnTimeout, noteOffTimeout);
+            });
+
+            // Update play button
+            const playBtn = document.getElementById('play-song-btn');
+            playBtn.textContent = '⏹️ STOP';
+            playBtn.classList.add('playing');
+
+            // Auto-reset after song ends
+            const maxTime = Math.max(...importedSong.notes.map(n => n.time + n.duration));
+            setTimeout(() => {
+                const playBtn = document.getElementById('play-song-btn');
+                playBtn.textContent = '▶️ PLAY';
+                playBtn.classList.remove('playing');
+            }, maxTime + 100);
+        }
+
+        function stopImportedSong() {
+            importedSongTimeouts.forEach(t => clearTimeout(t));
+            importedSongTimeouts = [];
+
+            // Release all notes
+            voices.forEach((voice, note) => {
+                releaseVoice(voice);
+                const keyEl = document.querySelector(`[data-midi="${note}"]`);
+                if (keyEl) keyEl.classList.remove('pressed');
+            });
+            voices.clear();
+
+            const playBtn = document.getElementById('play-song-btn');
+            if (playBtn) {
+                playBtn.textContent = '▶️ PLAY';
+                playBtn.classList.remove('playing');
+            }
+        }
+
+        function initSongPlayer() {
+            const importBtn = document.getElementById('import-song-btn');
+            const playBtn = document.getElementById('play-song-btn');
+
+            importBtn.addEventListener('click', () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.txt';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            const text = evt.target.result;
+                            importedSong = parseSongText(text);
+                            if (importedSong && importedSong.notes.length > 0) {
+                                alert(`Song imported: ${importedSong.notes.length} notes, preset: ${importedSong.preset || 'default'}`);
+                            } else {
+                                alert('Invalid song file or no notes found.');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            });
+
+            playBtn.addEventListener('click', () => {
+                if (playBtn.classList.contains('playing')) {
+                    stopImportedSong();
+                } else {
+                    playImportedSong();
+                }
+            });
+        }
+
         // Audio Recording
         let mediaRecorder = null;
         let recordedChunks = [];
@@ -2606,12 +2833,17 @@
         function startRecording() {
             initAudio();
 
+            // Start song recording (notes)
+            startSongRecording();
+
+            // Start audio recording
             if (!mediaStreamDest) {
                 mediaStreamDest = audioCtx.createMediaStreamDestination();
                 analyser.connect(mediaStreamDest);
             }
 
             recordedChunks = [];
+            const timestamp = Date.now();
 
             const options = { mimeType: 'audio/webm' };
             try {
@@ -2628,15 +2860,28 @@
             };
 
             mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `moog-recording-${Date.now()}.webm`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
+                // Download audio file
+                const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audioLink = document.createElement('a');
+                audioLink.href = audioUrl;
+                audioLink.download = `moog-song-${timestamp}.webm`;
+                document.body.appendChild(audioLink);
+                audioLink.click();
+                document.body.removeChild(audioLink);
+                URL.revokeObjectURL(audioUrl);
+
+                // Download song text file
+                const songText = generateSongText();
+                const textBlob = new Blob([songText], { type: 'text/plain' });
+                const textUrl = URL.createObjectURL(textBlob);
+                const textLink = document.createElement('a');
+                textLink.href = textUrl;
+                textLink.download = `moog-song-${timestamp}.txt`;
+                document.body.appendChild(textLink);
+                textLink.click();
+                document.body.removeChild(textLink);
+                URL.revokeObjectURL(textUrl);
             };
 
             mediaRecorder.start();
@@ -2648,6 +2893,10 @@
 
         function stopRecording() {
             if (mediaRecorder && mediaRecorder.state === 'recording') {
+                // Stop song recording first
+                stopSongRecording();
+
+                // Stop audio recording (triggers download of both files)
                 mediaRecorder.stop();
 
                 const recBtn = document.getElementById('rec-btn');
@@ -2880,6 +3129,7 @@
             initDemoButtons();
             initRecording();
             initPresetManager();
+            initSongPlayer();
 
             // Draw initial envelopes
             drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
