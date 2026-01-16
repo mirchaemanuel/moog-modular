@@ -490,6 +490,94 @@
             box-shadow: 0 0 15px rgba(255,102,102,0.4);
         }
 
+        /* Recording button */
+        .demo-btn.rec-btn {
+            border-color: #ff4444;
+            color: #ff4444;
+            text-shadow: 0 0 5px #ff4444;
+        }
+
+        .demo-btn.rec-btn:hover {
+            background: linear-gradient(180deg, #400a0a 0%, #1a0505 100%);
+            box-shadow: 0 0 15px rgba(255,68,68,0.4);
+        }
+
+        .demo-btn.rec-btn.recording {
+            background: linear-gradient(180deg, #ff4444 0%, #cc0000 100%);
+            color: #fff;
+            text-shadow: none;
+            animation: pulse-rec 1s infinite;
+        }
+
+        @keyframes pulse-rec {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,68,68,0.6); }
+            50% { box-shadow: 0 0 25px rgba(255,68,68,0.9); }
+        }
+
+        /* Preset manager section */
+        .preset-manager {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 15px;
+            flex-wrap: wrap;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-bottom: 1px solid #333;
+        }
+
+        .preset-manager-label {
+            color: #ff9900;
+            font-size: 0.85em;
+            text-shadow: 0 0 5px #ff9900;
+        }
+
+        .preset-select {
+            background: #1a1a1a;
+            color: #ff9900;
+            border: 2px solid #ff9900;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            min-width: 150px;
+            cursor: pointer;
+        }
+
+        .preset-select:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255,153,0,0.4);
+        }
+
+        .preset-manager-btn {
+            padding: 8px 14px;
+            background: linear-gradient(180deg, #302010 0%, #1a0f05 100%);
+            border: 2px solid #ff9900;
+            border-radius: 5px;
+            color: #ff9900;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            transition: all 0.2s;
+            text-shadow: 0 0 5px #ff9900;
+        }
+
+        .preset-manager-btn:hover {
+            background: linear-gradient(180deg, #403020 0%, #2a1f15 100%);
+            box-shadow: 0 0 15px rgba(255,153,0,0.4);
+        }
+
+        .preset-manager-btn.delete-btn {
+            border-color: #ff6666;
+            color: #ff6666;
+            text-shadow: 0 0 5px #ff6666;
+        }
+
+        .preset-manager-btn.delete-btn:hover {
+            background: linear-gradient(180deg, #400a0a 0%, #1a0505 100%);
+            box-shadow: 0 0 15px rgba(255,102,102,0.4);
+        }
+
         /* Info panel */
         .info-panel {
             text-align: center;
@@ -639,6 +727,16 @@
 
     <canvas id="patch-canvas"></canvas>
 
+    <div class="preset-manager">
+        <span class="preset-manager-label">MY PRESETS:</span>
+        <select class="preset-select" id="user-presets">
+            <option value="">-- Select --</option>
+        </select>
+        <button class="preset-manager-btn" id="load-preset-btn">LOAD</button>
+        <button class="preset-manager-btn" id="save-preset-btn">💾 SAVE</button>
+        <button class="preset-manager-btn delete-btn" id="delete-preset-btn">🗑️ DEL</button>
+    </div>
+
     <div class="preset-section">
         <button class="preset-btn" onclick="loadPreset('init')">INIT</button>
         <button class="preset-btn" onclick="loadPreset('bass')">BASS</button>
@@ -662,6 +760,8 @@
         <button class="demo-btn" data-demo="toto">AFRICA</button>
         <button class="demo-btn" data-demo="sweetdreams">SWEET DREAMS</button>
         <button class="demo-btn stop-btn" id="stop-demo">STOP</button>
+        <span class="demo-label" style="margin-left: 20px;">REC:</span>
+        <button class="demo-btn rec-btn" id="rec-btn">🔴 REC</button>
     </div>
 
     <div class="synth-container">
@@ -2486,12 +2586,300 @@
             document.getElementById('stop-demo').addEventListener('click', stopDemo);
         }
 
+        // Audio Recording
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let mediaStreamDest = null;
+
+        function initRecording() {
+            const recBtn = document.getElementById('rec-btn');
+
+            recBtn.addEventListener('click', () => {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            });
+        }
+
+        function startRecording() {
+            initAudio();
+
+            if (!mediaStreamDest) {
+                mediaStreamDest = audioCtx.createMediaStreamDestination();
+                analyser.connect(mediaStreamDest);
+            }
+
+            recordedChunks = [];
+
+            const options = { mimeType: 'audio/webm' };
+            try {
+                mediaRecorder = new MediaRecorder(mediaStreamDest.stream, options);
+            } catch (e) {
+                // Fallback if webm not supported
+                mediaRecorder = new MediaRecorder(mediaStreamDest.stream);
+            }
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `moog-recording-${Date.now()}.webm`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+
+            mediaRecorder.start();
+
+            const recBtn = document.getElementById('rec-btn');
+            recBtn.classList.add('recording');
+            recBtn.textContent = '⏹️ STOP';
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+
+                const recBtn = document.getElementById('rec-btn');
+                recBtn.classList.remove('recording');
+                recBtn.textContent = '🔴 REC';
+            }
+        }
+
+        // User Presets (localStorage)
+        const USER_PRESETS_KEY = 'moog-modular-user-presets';
+
+        function getUserPresets() {
+            const stored = localStorage.getItem(USER_PRESETS_KEY);
+            return stored ? JSON.parse(stored) : {};
+        }
+
+        function saveUserPresets(presets) {
+            localStorage.setItem(USER_PRESETS_KEY, JSON.stringify(presets));
+        }
+
+        function getCurrentStateAsPreset() {
+            return {
+                vco1: { wave: state.vco1.wave, octave: state.vco1.octave, detune: state.vco1.detune },
+                vco2: { wave: state.vco2.wave, octave: state.vco2.octave, detune: state.vco2.detune },
+                vco3: { wave: state.vco3.wave, octave: state.vco3.octave, detune: state.vco3.detune },
+                mixer: {
+                    vco1: Math.round(state.mixer.vco1 * 100),
+                    vco2: Math.round(state.mixer.vco2 * 100),
+                    vco3: Math.round(state.mixer.vco3 * 100),
+                    noise: Math.round(state.mixer.noise * 100)
+                },
+                filter: {
+                    cutoff: state.filter.cutoff,
+                    resonance: state.filter.resonance,
+                    envAmount: state.filter.envAmount,
+                    kbdTrack: state.filter.kbdTrack
+                },
+                filterEnv: { ...state.filterEnv },
+                ampEnv: { ...state.ampEnv },
+                effects: { ...state.effects },
+                glide: state.master.glide,
+                lfo1: { ...state.lfo1 },
+                lfo2: { ...state.lfo2 }
+            };
+        }
+
+        function updatePresetDropdown() {
+            const select = document.getElementById('user-presets');
+            const userPresets = getUserPresets();
+
+            // Clear existing options except the first one
+            select.innerHTML = '<option value="">-- Select --</option>';
+
+            // Add user presets
+            Object.keys(userPresets).sort().forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+        }
+
+        function initPresetManager() {
+            updatePresetDropdown();
+
+            // Load button
+            document.getElementById('load-preset-btn').addEventListener('click', () => {
+                const select = document.getElementById('user-presets');
+                const presetName = select.value;
+
+                if (!presetName) {
+                    alert('Select a preset first!');
+                    return;
+                }
+
+                const userPresets = getUserPresets();
+                if (userPresets[presetName]) {
+                    loadPresetData(userPresets[presetName]);
+                }
+            });
+
+            // Save button
+            document.getElementById('save-preset-btn').addEventListener('click', () => {
+                const name = prompt('Enter preset name:');
+                if (!name || !name.trim()) return;
+
+                const cleanName = name.trim();
+                const userPresets = getUserPresets();
+
+                if (userPresets[cleanName]) {
+                    if (!confirm(`Overwrite "${cleanName}"?`)) return;
+                }
+
+                userPresets[cleanName] = getCurrentStateAsPreset();
+                saveUserPresets(userPresets);
+                updatePresetDropdown();
+
+                // Select the newly saved preset
+                document.getElementById('user-presets').value = cleanName;
+                alert(`Preset "${cleanName}" saved!`);
+            });
+
+            // Delete button
+            document.getElementById('delete-preset-btn').addEventListener('click', () => {
+                const select = document.getElementById('user-presets');
+                const presetName = select.value;
+
+                if (!presetName) {
+                    alert('Select a preset first!');
+                    return;
+                }
+
+                if (!confirm(`Delete "${presetName}"?`)) return;
+
+                const userPresets = getUserPresets();
+                delete userPresets[presetName];
+                saveUserPresets(userPresets);
+                updatePresetDropdown();
+            });
+        }
+
+        function loadPresetData(preset) {
+            // Helper to set knob
+            function setKnob(param, value) {
+                const knob = document.querySelector(`[data-param="${param}"]`);
+                if (knob) {
+                    knob.dataset.value = value;
+                    const min = parseFloat(knob.dataset.min);
+                    const max = parseFloat(knob.dataset.max);
+                    const isLog = knob.dataset.log === 'true';
+                    updateKnobRotation(knob, value, min, max, isLog);
+                    updateKnobValue(param, value);
+                    applyParameter(param, value);
+                }
+            }
+
+            // VCOs
+            for (let i = 1; i <= 3; i++) {
+                const vco = preset[`vco${i}`];
+                if (vco) {
+                    setKnob(`vco${i}-octave`, vco.octave);
+                    setKnob(`vco${i}-detune`, vco.detune);
+
+                    // Set wave
+                    document.querySelectorAll(`.wave-btn[data-vco="${i}"]`).forEach(b => {
+                        b.classList.toggle('active', b.dataset.wave === vco.wave);
+                    });
+                    state[`vco${i}`].wave = vco.wave;
+                }
+            }
+
+            // Mixer
+            if (preset.mixer) {
+                setKnob('mix1', preset.mixer.vco1);
+                setKnob('mix2', preset.mixer.vco2);
+                setKnob('mix3', preset.mixer.vco3);
+                setKnob('noise', preset.mixer.noise);
+            }
+
+            // Filter
+            if (preset.filter) {
+                setKnob('cutoff', preset.filter.cutoff);
+                setKnob('resonance', preset.filter.resonance);
+                setKnob('filter-env', preset.filter.envAmount);
+                setKnob('filter-kbd', preset.filter.kbdTrack);
+            }
+
+            // Envelopes
+            if (preset.filterEnv) {
+                setKnob('f-attack', preset.filterEnv.attack);
+                setKnob('f-decay', preset.filterEnv.decay);
+                setKnob('f-sustain', preset.filterEnv.sustain);
+                setKnob('f-release', preset.filterEnv.release);
+            }
+
+            if (preset.ampEnv) {
+                setKnob('a-attack', preset.ampEnv.attack);
+                setKnob('a-decay', preset.ampEnv.decay);
+                setKnob('a-sustain', preset.ampEnv.sustain);
+                setKnob('a-release', preset.ampEnv.release);
+            }
+
+            // Effects
+            if (preset.effects) {
+                setKnob('delay-time', preset.effects.delayTime);
+                setKnob('delay-feedback', preset.effects.delayFeedback);
+                setKnob('delay-mix', preset.effects.delayMix);
+                setKnob('reverb-mix', preset.effects.reverbMix);
+            }
+
+            // Glide
+            if (preset.glide !== undefined) {
+                setKnob('glide', preset.glide);
+            }
+
+            // LFOs
+            if (preset.lfo1) {
+                setKnob('lfo1-rate', preset.lfo1.rate);
+                setKnob('lfo1-amount', preset.lfo1.amount);
+                document.querySelectorAll('.wave-btn[data-lfo="1"]').forEach(b => {
+                    b.classList.toggle('active', b.dataset.wave === preset.lfo1.wave);
+                });
+                state.lfo1.wave = preset.lfo1.wave;
+                state.lfo1.dest = preset.lfo1.dest;
+                document.getElementById('lfo1-dest').value = preset.lfo1.dest;
+                if (lfo1Osc) lfo1Osc.type = preset.lfo1.wave;
+            }
+
+            if (preset.lfo2) {
+                setKnob('lfo2-rate', preset.lfo2.rate);
+                setKnob('lfo2-amount', preset.lfo2.amount);
+                document.querySelectorAll('.wave-btn[data-lfo="2"]').forEach(b => {
+                    b.classList.toggle('active', b.dataset.wave === preset.lfo2.wave);
+                });
+                state.lfo2.wave = preset.lfo2.wave;
+                state.lfo2.dest = preset.lfo2.dest;
+                document.getElementById('lfo2-dest').value = preset.lfo2.dest;
+                if (lfo2Osc) lfo2Osc.type = preset.lfo2.wave;
+            }
+
+            // Update waveforms on active voices
+            updateActiveWaveforms();
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             createKeyboard();
             initKnobs();
             initWaveSelectors();
             initDemoButtons();
+            initRecording();
+            initPresetManager();
 
             // Draw initial envelopes
             drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
