@@ -60,6 +60,36 @@
             background: linear-gradient(90deg, #2d1810 0%, #4a2c1a 50%, #2d1810 100%);
             border-bottom: 4px solid #8b4513;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .info-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #4a3828, #2d1810);
+            border: 2px solid #8b4513;
+            color: #ffd700;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            font-weight: bold;
+            font-style: italic;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            line-height: 1;
+            padding-left: 1px;
+        }
+
+        .info-btn:hover {
+            background: linear-gradient(145deg, #5a4838, #3d2820);
+            border-color: #ffd700;
+            transform: scale(1.1);
+            box-shadow: 0 0 12px rgba(255,215,0,0.4);
         }
 
         .header h1 {
@@ -68,6 +98,10 @@
             text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff6600;
             letter-spacing: 8px;
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
         .header p {
@@ -721,7 +755,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>MOOG MODULAR</h1>
+        <h1>MOOG MODULAR <a href="https://a80.it/blog/web-audio-api-building-a-moog-style-modular-synthesizer-in-javascript" target="_blank" class="info-btn" title="Read the article about this project">i</a></h1>
         <p>by Mircha Emanuel D'Angelo - Use keyboard A-L or click the keys</p>
     </div>
 
