@@ -1377,7 +1377,7 @@
 
             if (voices.has(note)) return;
 
-            const frequency = 440 * Math.pow(2, (note - 69 + state.octaveShift * 12) / 12);
+            const frequency = 440 * Math.pow(2, (note - 69) / 12);
             const voice = createVoice(frequency, velocity);
             voices.set(note, voice);
 
@@ -1743,7 +1743,7 @@
 
             voices.forEach((voice, note) => {
                 // Update oscillator frequencies and detune
-                const baseFreq = 440 * Math.pow(2, (note - 69 + state.octaveShift * 12) / 12);
+                const baseFreq = 440 * Math.pow(2, (note - 69) / 12);
 
                 for (let i = 0; i < 3; i++) {
                     const vcoState = state[`vco${i + 1}`];
