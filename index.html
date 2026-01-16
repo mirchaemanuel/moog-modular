@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moog Modular Synthesizer</title>
+    <title>MOOG MODULAR by Mircha Emanuel D'Angelo</title>
     <meta name="description" content="A virtual Moog Modular Synthesizer with 3 VCOs, ladder filter, ADSR envelopes, LFOs and effects. Made with ❤️ by Mircha Emanuel D'Angelo.">
     <meta name="author" content="Mircha Emanuel D'Angelo">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Moog Modular Synthesizer">
+    <meta property="og:title" content="MOOG MODULAR by Mircha Emanuel D'Angelo">
     <meta property="og:description" content="A virtual Moog Modular Synthesizer with 3 VCOs, ladder filter, ADSR envelopes, LFOs and effects. Made with ❤️ by Mircha Emanuel D'Angelo.">
-    <meta property="og:site_name" content="Moog Modular">
+    <meta property="og:site_name" content="MOOG MODULAR">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Moog Modular Synthesizer">
+    <meta name="twitter:title" content="MOOG MODULAR by Mircha Emanuel D'Angelo">
     <meta name="twitter:description" content="A virtual Moog Modular Synthesizer with 3 VCOs, ladder filter, ADSR envelopes, LFOs and effects. Made with ❤️ by Mircha Emanuel D'Angelo.">
 
     <!-- Schema.org -->
@@ -303,17 +303,19 @@
         .keyboard {
             display: flex;
             position: relative;
-            height: 180px;
+            height: 140px;
             width: fit-content;
             margin: 0 auto;
+            overflow-x: auto;
+            padding-bottom: 20px;
         }
 
         .white-key {
-            width: 50px;
-            height: 170px;
+            width: 28px;
+            height: 120px;
             background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 85%, #ccc 100%);
             border: 1px solid #999;
-            border-radius: 0 0 5px 5px;
+            border-radius: 0 0 4px 4px;
             cursor: pointer;
             position: relative;
             z-index: 1;
@@ -329,15 +331,15 @@
 
         .white-key:active, .white-key.pressed {
             background: linear-gradient(180deg, #ddd 0%, #ccc 85%, #bbb 100%);
-            height: 168px;
+            height: 118px;
             margin-top: 2px;
         }
 
         .black-key {
-            width: 30px;
-            height: 110px;
+            width: 18px;
+            height: 75px;
             background: linear-gradient(180deg, #333 0%, #1a1a1a 90%, #000 100%);
-            border-radius: 0 0 4px 4px;
+            border-radius: 0 0 3px 3px;
             cursor: pointer;
             position: absolute;
             z-index: 2;
@@ -354,16 +356,16 @@
 
         .black-key:active, .black-key.pressed {
             background: linear-gradient(180deg, #222 0%, #111 90%, #000 100%);
-            height: 108px;
+            height: 73px;
             margin-top: 2px;
         }
 
         .key-label {
             position: absolute;
-            bottom: 10px;
+            bottom: 5px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.8em;
+            font-size: 0.55em;
             font-weight: bold;
             color: #333;
             pointer-events: none;
@@ -371,8 +373,18 @@
 
         .black-key .key-label {
             color: #ffd700;
-            bottom: 8px;
-            font-size: 0.7em;
+            bottom: 4px;
+            font-size: 0.5em;
+        }
+
+        .octave-marker {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6em;
+            color: #888;
+            pointer-events: none;
         }
 
         /* Oscilloscope */
@@ -421,6 +433,61 @@
         .preset-btn:hover {
             background: linear-gradient(180deg, #5a4530 0%, #3d2820 100%);
             box-shadow: 0 0 15px rgba(255,215,0,0.3);
+        }
+
+        /* Demo section */
+        .demo-section {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 10px 15px;
+            flex-wrap: wrap;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border-top: 1px solid #333;
+        }
+
+        .demo-label {
+            color: #00ffff;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .demo-btn {
+            padding: 8px 16px;
+            background: linear-gradient(180deg, #0a3030 0%, #051a1a 100%);
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            color: #00ffff;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            transition: all 0.2s;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .demo-btn:hover {
+            background: linear-gradient(180deg, #0f4040 0%, #0a2a2a 100%);
+            box-shadow: 0 0 15px rgba(0,255,255,0.4);
+        }
+
+        .demo-btn.playing {
+            background: linear-gradient(180deg, #00ffff 0%, #008888 100%);
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 20px rgba(0,255,255,0.6);
+        }
+
+        .demo-btn.stop-btn {
+            border-color: #ff6666;
+            color: #ff6666;
+            text-shadow: 0 0 5px #ff6666;
+        }
+
+        .demo-btn.stop-btn:hover {
+            background: linear-gradient(180deg, #400a0a 0%, #1a0505 100%);
+            box-shadow: 0 0 15px rgba(255,102,102,0.4);
         }
 
         /* Info panel */
@@ -567,7 +634,7 @@
 <body>
     <div class="header">
         <h1>MOOG MODULAR</h1>
-        <p>Web Synthesizer - Use keyboard A-L or click the keys</p>
+        <p>by Mircha Emanuel D'Angelo - Use keyboard A-L or click the keys</p>
     </div>
 
     <canvas id="patch-canvas"></canvas>
@@ -580,6 +647,15 @@
         <button class="preset-btn" onclick="loadPreset('brass')">BRASS</button>
         <button class="preset-btn" onclick="loadPreset('strings')">STRINGS</button>
         <button class="preset-btn" onclick="loadPreset('weird')">WEIRD</button>
+    </div>
+
+    <div class="demo-section">
+        <span class="demo-label">DEMO:</span>
+        <button class="demo-btn" data-demo="chase">CHASE</button>
+        <button class="demo-btn" data-demo="space">SPACE</button>
+        <button class="demo-btn" data-demo="italo">ITALO</button>
+        <button class="demo-btn" data-demo="blade">BLADE RUNNER</button>
+        <button class="demo-btn stop-btn" id="stop-demo">STOP</button>
     </div>
 
     <div class="synth-container">
@@ -1418,69 +1494,101 @@
         // Create keyboard
         function createKeyboard() {
             const keyboard = document.getElementById('keyboard');
-            const notes = [
-                { note: 'C', midi: 60, key: 'a' },
-                { note: 'C#', midi: 61, key: 'w', black: true },
-                { note: 'D', midi: 62, key: 's' },
-                { note: 'D#', midi: 63, key: 'e', black: true },
-                { note: 'E', midi: 64, key: 'd' },
-                { note: 'F', midi: 65, key: 'f' },
-                { note: 'F#', midi: 66, key: 't', black: true },
-                { note: 'G', midi: 67, key: 'g' },
-                { note: 'G#', midi: 68, key: 'y', black: true },
-                { note: 'A', midi: 69, key: 'h' },
-                { note: 'A#', midi: 70, key: 'u', black: true },
-                { note: 'B', midi: 71, key: 'j' },
-                { note: 'C', midi: 72, key: 'k' },
-                { note: 'C#', midi: 73, key: 'o', black: true },
-                { note: 'D', midi: 74, key: 'l' }
-            ];
 
+            // Extended keyboard from C2 (MIDI 36) to C6 (MIDI 84)
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            const blackNotes = [1, 3, 6, 8, 10]; // Indices of black keys in octave
+
+            // Base keyboard mapping (relative offsets from base note)
+            const keyOffsets = {
+                'a': 0, 'w': 1, 's': 2, 'e': 3, 'd': 4, 'f': 5, 't': 6,
+                'g': 7, 'y': 8, 'h': 9, 'u': 10, 'j': 11, 'k': 12, 'o': 13, 'l': 14
+            };
+            const baseNote = 60; // C4
+
+            const whiteKeyWidth = 28;
             let whiteKeyIndex = 0;
-            const whiteKeyWidth = 50;
 
-            notes.forEach((n, i) => {
+            // Generate notes from C2 (36) to C6 (84)
+            for (let midi = 36; midi <= 84; midi++) {
+                const noteIndex = midi % 12;
+                const octave = Math.floor(midi / 12) - 1;
+                const noteName = noteNames[noteIndex];
+                const isBlack = blackNotes.includes(noteIndex);
+
                 const key = document.createElement('div');
-                key.dataset.midi = n.midi;
+                key.dataset.midi = midi;
 
-                if (n.black) {
+                if (isBlack) {
                     key.className = 'black-key';
-                    key.style.left = `${whiteKeyIndex * whiteKeyWidth - 15}px`;
+                    key.style.left = `${whiteKeyIndex * whiteKeyWidth - 9}px`;
                 } else {
                     key.className = 'white-key';
+
+                    // Add octave marker on C notes
+                    if (noteName === 'C') {
+                        const marker = document.createElement('span');
+                        marker.className = 'octave-marker';
+                        marker.textContent = `C${octave}`;
+                        key.appendChild(marker);
+                    }
+
                     whiteKeyIndex++;
                 }
-
-                const label = document.createElement('span');
-                label.className = 'key-label';
-                label.textContent = n.key.toUpperCase();
-                key.appendChild(label);
 
                 // Mouse events
                 key.addEventListener('mousedown', (e) => {
                     e.preventDefault();
-                    noteOn(n.midi);
+                    noteOn(midi);
                     key.classList.add('pressed');
                 });
 
                 key.addEventListener('mouseup', () => {
-                    noteOff(n.midi);
+                    noteOff(midi);
                     key.classList.remove('pressed');
                 });
 
                 key.addEventListener('mouseleave', () => {
-                    noteOff(n.midi);
+                    noteOff(midi);
                     key.classList.remove('pressed');
                 });
 
                 keyboard.appendChild(key);
-            });
+            }
 
-            // Keyboard mapping
-            const keyMap = {};
-            notes.forEach(n => {
-                keyMap[n.key] = n.midi;
-            });
+            // Update keyboard labels based on octave shift
+            function updateKeyboardLabels() {
+                // Remove all existing key labels
+                document.querySelectorAll('.key-label').forEach(label => {
+                    if (!label.closest('.octave-marker')) {
+                        label.remove();
+                    }
+                });
+
+                // Add labels at current octave position
+                const currentBase = baseNote + (state.octaveShift * 12);
+                Object.entries(keyOffsets).forEach(([keyChar, offset]) => {
+                    const midi = currentBase + offset;
+                    const keyEl = document.querySelector(`[data-midi="${midi}"]`);
+                    if (keyEl) {
+                        const label = document.createElement('span');
+                        label.className = 'key-label';
+                        label.textContent = keyChar.toUpperCase();
+                        keyEl.appendChild(label);
+                    }
+                });
+            }
+
+            // Initial label setup
+            updateKeyboardLabels();
+
+            // Calculate MIDI note from key press
+            function getMidiFromKey(key) {
+                if (keyOffsets[key] !== undefined) {
+                    return baseNote + (state.octaveShift * 12) + keyOffsets[key];
+                }
+                return null;
+            }
 
             document.addEventListener('keydown', (e) => {
                 if (e.repeat) return;
@@ -1488,25 +1596,29 @@
 
                 if (key === 'z') {
                     state.octaveShift = Math.max(state.octaveShift - 1, -2);
+                    updateKeyboardLabels();
                     return;
                 }
                 if (key === 'x') {
                     state.octaveShift = Math.min(state.octaveShift + 1, 2);
+                    updateKeyboardLabels();
                     return;
                 }
 
-                if (keyMap[key] !== undefined) {
-                    noteOn(keyMap[key]);
-                    const keyEl = document.querySelector(`[data-midi="${keyMap[key]}"]`);
+                const midi = getMidiFromKey(key);
+                if (midi !== null && midi >= 36 && midi <= 84) {
+                    noteOn(midi);
+                    const keyEl = document.querySelector(`[data-midi="${midi}"]`);
                     if (keyEl) keyEl.classList.add('pressed');
                 }
             });
 
             document.addEventListener('keyup', (e) => {
                 const key = e.key.toLowerCase();
-                if (keyMap[key] !== undefined) {
-                    noteOff(keyMap[key]);
-                    const keyEl = document.querySelector(`[data-midi="${keyMap[key]}"]`);
+                const midi = getMidiFromKey(key);
+                if (midi !== null && midi >= 36 && midi <= 84) {
+                    noteOff(midi);
+                    const keyEl = document.querySelector(`[data-midi="${midi}"]`);
                     if (keyEl) keyEl.classList.remove('pressed');
                 }
             });
@@ -1991,11 +2103,225 @@
             setKnob('glide', preset.glide);
         }
 
+        // Demo Sequencer
+        let demoInterval = null;
+        let demoTimeouts = [];
+        let currentDemo = null;
+
+        const demos = {
+            chase: {
+                preset: 'lead',
+                bpm: 130,
+                loop: true,
+                pattern: [
+                    // E minor arpeggio - classic Chase style
+                    { note: 64, time: 0, duration: 100 },      // E4
+                    { note: 67, time: 115, duration: 100 },    // G4
+                    { note: 71, time: 230, duration: 100 },    // B4
+                    { note: 76, time: 345, duration: 100 },    // E5
+                    { note: 71, time: 460, duration: 100 },    // B4
+                    { note: 67, time: 575, duration: 100 },    // G4
+                    { note: 64, time: 690, duration: 100 },    // E4
+                    { note: 67, time: 805, duration: 100 },    // G4
+                    { note: 71, time: 920, duration: 100 },    // B4
+                    { note: 76, time: 1035, duration: 100 },   // E5
+                    { note: 71, time: 1150, duration: 100 },   // B4
+                    { note: 67, time: 1265, duration: 100 },   // G4
+                    { note: 64, time: 1380, duration: 100 },   // E4
+                    { note: 67, time: 1495, duration: 100 },   // G4
+                    { note: 71, time: 1610, duration: 100 },   // B4
+                    { note: 76, time: 1725, duration: 100 },   // E5
+                ],
+                loopLength: 1840
+            },
+            space: {
+                preset: 'pad',
+                bpm: 70,
+                loop: true,
+                pattern: [
+                    // Dm chord
+                    { note: 62, time: 0, duration: 2500 },     // D4
+                    { note: 65, time: 50, duration: 2450 },    // F4
+                    { note: 69, time: 100, duration: 2400 },   // A4
+                    // Am chord
+                    { note: 57, time: 3000, duration: 2500 },  // A3
+                    { note: 60, time: 3050, duration: 2450 },  // C4
+                    { note: 64, time: 3100, duration: 2400 },  // E4
+                    // C chord
+                    { note: 60, time: 6000, duration: 2500 },  // C4
+                    { note: 64, time: 6050, duration: 2450 },  // E4
+                    { note: 67, time: 6100, duration: 2400 },  // G4
+                    // G chord
+                    { note: 55, time: 9000, duration: 2500 },  // G3
+                    { note: 59, time: 9050, duration: 2450 },  // B3
+                    { note: 62, time: 9100, duration: 2400 },  // D4
+                ],
+                loopLength: 12000
+            },
+            italo: {
+                preset: 'bass',
+                bpm: 120,
+                loop: true,
+                pattern: [
+                    // Bass octave pulse in E
+                    { note: 40, time: 0, duration: 150 },      // E2
+                    { note: 52, time: 250, duration: 150 },    // E3
+                    { note: 40, time: 500, duration: 150 },    // E2
+                    { note: 52, time: 750, duration: 150 },    // E3
+                    { note: 40, time: 1000, duration: 150 },   // E2
+                    { note: 52, time: 1250, duration: 150 },   // E3
+                    { note: 40, time: 1500, duration: 150 },   // E2
+                    { note: 52, time: 1750, duration: 150 },   // E3
+                    // Melodic sequence
+                    { note: 64, time: 2000, duration: 200 },   // E4
+                    { note: 67, time: 2250, duration: 200 },   // G4
+                    { note: 69, time: 2500, duration: 200 },   // A4
+                    { note: 71, time: 2750, duration: 200 },   // B4
+                    { note: 69, time: 3000, duration: 200 },   // A4
+                    { note: 67, time: 3250, duration: 200 },   // G4
+                    { note: 64, time: 3500, duration: 200 },   // E4
+                    { note: 62, time: 3750, duration: 200 },   // D4
+                ],
+                loopLength: 4000
+            },
+            blade: {
+                preset: 'strings',
+                bpm: 60,
+                loop: true,
+                pattern: [
+                    // Cm7 chord
+                    { note: 48, time: 0, duration: 3800 },     // C3
+                    { note: 55, time: 100, duration: 3700 },   // G3
+                    { note: 58, time: 200, duration: 3600 },   // Bb3
+                    { note: 63, time: 300, duration: 3500 },   // Eb4
+                    // Fm7 chord
+                    { note: 53, time: 4000, duration: 3800 },  // F3
+                    { note: 60, time: 4100, duration: 3700 },  // C4
+                    { note: 63, time: 4200, duration: 3600 },  // Eb4
+                    { note: 68, time: 4300, duration: 3500 },  // Ab4
+                    // Abmaj7 chord
+                    { note: 56, time: 8000, duration: 3800 },  // Ab3
+                    { note: 60, time: 8100, duration: 3700 },  // C4
+                    { note: 63, time: 8200, duration: 3600 },  // Eb4
+                    { note: 67, time: 8300, duration: 3500 },  // G4
+                    // Gm chord
+                    { note: 55, time: 12000, duration: 3800 }, // G3
+                    { note: 58, time: 12100, duration: 3700 }, // Bb3
+                    { note: 62, time: 12200, duration: 3600 }, // D4
+                    { note: 67, time: 12300, duration: 3500 }, // G4
+                ],
+                loopLength: 16000
+            }
+        };
+
+        function playDemo(name) {
+            stopDemo();
+
+            const demo = demos[name];
+            if (!demo) return;
+
+            initAudio();
+            currentDemo = name;
+
+            // Load preset
+            loadPreset(demo.preset);
+
+            // Update UI
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.classList.remove('playing');
+                if (btn.dataset.demo === name) {
+                    btn.classList.add('playing');
+                }
+            });
+
+            // Schedule notes
+            function schedulePattern() {
+                const startTime = audioCtx.currentTime * 1000;
+
+                demo.pattern.forEach(event => {
+                    const noteOnTimeout = setTimeout(() => {
+                        if (currentDemo !== name) return;
+                        noteOn(event.note);
+                        // Visual feedback on keyboard
+                        const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                        if (keyEl) keyEl.classList.add('pressed');
+                    }, event.time);
+
+                    const noteOffTimeout = setTimeout(() => {
+                        if (currentDemo !== name) return;
+                        noteOff(event.note);
+                        const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
+                        if (keyEl) keyEl.classList.remove('pressed');
+                    }, event.time + event.duration);
+
+                    demoTimeouts.push(noteOnTimeout, noteOffTimeout);
+                });
+
+                if (demo.loop) {
+                    demoInterval = setTimeout(() => {
+                        if (currentDemo === name) {
+                            schedulePattern();
+                        }
+                    }, demo.loopLength);
+                }
+            }
+
+            schedulePattern();
+        }
+
+        function stopDemo() {
+            // Clear all timeouts
+            demoTimeouts.forEach(t => clearTimeout(t));
+            demoTimeouts = [];
+
+            if (demoInterval) {
+                clearTimeout(demoInterval);
+                demoInterval = null;
+            }
+
+            // Release all notes
+            voices.forEach((voice, note) => {
+                releaseVoice(voice);
+                const keyEl = document.querySelector(`[data-midi="${note}"]`);
+                if (keyEl) keyEl.classList.remove('pressed');
+            });
+            voices.clear();
+
+            // Update UI
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.classList.remove('playing');
+            });
+
+            // Turn off LEDs
+            document.getElementById('vco1-led').classList.remove('on');
+            document.getElementById('vco2-led').classList.remove('on');
+            document.getElementById('vco3-led').classList.remove('on');
+            document.getElementById('master-led').classList.remove('on');
+
+            currentDemo = null;
+        }
+
+        function initDemoButtons() {
+            document.querySelectorAll('.demo-btn[data-demo]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const demoName = btn.dataset.demo;
+                    if (currentDemo === demoName) {
+                        stopDemo();
+                    } else {
+                        playDemo(demoName);
+                    }
+                });
+            });
+
+            document.getElementById('stop-demo').addEventListener('click', stopDemo);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             createKeyboard();
             initKnobs();
             initWaveSelectors();
+            initDemoButtons();
 
             // Draw initial envelopes
             drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
