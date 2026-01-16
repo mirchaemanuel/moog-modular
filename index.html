@@ -1636,6 +1636,16 @@
         }
 
         // Wave selector handling
+        // Update waveforms on active voices in real-time
+        function updateActiveWaveforms() {
+            voices.forEach((voice) => {
+                for (let i = 0; i < 3; i++) {
+                    const vcoState = state[`vco${i + 1}`];
+                    voice.oscs[i].type = vcoState.wave;
+                }
+            });
+        }
+
         function initWaveSelectors() {
             // VCO wave selectors
             document.querySelectorAll('.wave-btn[data-vco]').forEach(btn => {
@@ -1647,6 +1657,7 @@
                     btn.classList.add('active');
 
                     state[`vco${vco}`].wave = wave;
+                    updateActiveWaveforms();
                 });
             });
 
