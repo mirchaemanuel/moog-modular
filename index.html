@@ -1555,6 +1555,22 @@
             });
         }
 
+        // Update envelope sustain levels in real-time
+        function updateActiveEnvelopes() {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+
+            voices.forEach((voice) => {
+                // Update amp envelope sustain level
+                const ampSustain = state.ampEnv.sustain / 100;
+                voice.vca.gain.setTargetAtTime(ampSustain, now, 0.05);
+
+                // Update filter envelope sustain level
+                const filterSustain = state.filter.cutoff * (state.filterEnv.sustain / 100);
+                voice.filter.frequency.setTargetAtTime(Math.max(filterSustain, 20), now, 0.05);
+            });
+        }
+
         function applyParameter(param, value) {
             switch(param) {
                 case 'vco1-octave':
@@ -1617,10 +1633,12 @@
                 case 'f-decay':
                     state.filterEnv.decay = value;
                     drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
+                    updateActiveEnvelopes();
                     break;
                 case 'f-sustain':
                     state.filterEnv.sustain = value;
                     drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
+                    updateActiveEnvelopes();
                     break;
                 case 'f-release':
                     state.filterEnv.release = value;
@@ -1633,10 +1651,12 @@
                 case 'a-decay':
                     state.ampEnv.decay = value;
                     drawEnvelope('amp-env-display', state.ampEnv.attack, state.ampEnv.decay, state.ampEnv.sustain, state.ampEnv.release);
+                    updateActiveEnvelopes();
                     break;
                 case 'a-sustain':
                     state.ampEnv.sustain = value;
                     drawEnvelope('amp-env-display', state.ampEnv.attack, state.ampEnv.decay, state.ampEnv.sustain, state.ampEnv.release);
+                    updateActiveEnvelopes();
                     break;
                 case 'a-release':
                     state.ampEnv.release = value;
