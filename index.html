@@ -1644,11 +1644,17 @@
             voices.forEach((voice) => {
                 // Update amp envelope sustain level
                 const ampSustain = state.ampEnv.sustain / 100;
-                voice.vca.gain.setTargetAtTime(ampSustain, now, 0.05);
+                voice.vca.gain.cancelScheduledValues(now);
+                voice.vca.gain.setTargetAtTime(ampSustain, now, 0.03);
 
-                // Update filter envelope sustain level
-                const filterSustain = state.filter.cutoff * (state.filterEnv.sustain / 100);
-                voice.filter.frequency.setTargetAtTime(Math.max(filterSustain, 20), now, 0.05);
+                // Update filter envelope sustain level (matching createVoice calculation)
+                const filterEnvAmount = (state.filter.envAmount / 100) * state.filter.cutoff;
+                const filterStart = Math.max(state.filter.cutoff - filterEnvAmount, 20);
+                const filterPeak = Math.min(state.filter.cutoff + filterEnvAmount * 0.5, 20000);
+                const filterSustain = filterStart + (filterPeak - filterStart) * (state.filterEnv.sustain / 100);
+
+                voice.filter.frequency.cancelScheduledValues(now);
+                voice.filter.frequency.setTargetAtTime(Math.max(filterSustain, 20), now, 0.03);
             });
         }
 
