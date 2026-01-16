@@ -1,7 +1,6 @@
 # BEETHOVEN - SYMPHONY NO. 5 IN C MINOR, OP. 67
 # First Movement - Complete MIDI Transcription
-# Tracks: Strings (melody) + Contrabass (bass) + Flute + Clarinet
-# preset: brass
+# preset: init
 
 150:G3:150
 150:G4:150
