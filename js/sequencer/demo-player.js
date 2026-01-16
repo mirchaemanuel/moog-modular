@@ -5,7 +5,8 @@ import { initAudio } from '../audio/audio-context.js';
 import { noteOn, noteOff, releaseVoice } from '../audio/voice-manager.js';
 import { loadPreset } from '../presets/preset-manager.js';
 import { demos } from './demo-patterns.js';
-import { parseSongText, stopImportedSong } from './song-player.js';
+import { parseSongText } from './song-player.js';
+import { registerStopFunction, stopAllExcept } from './playback-manager.js';
 
 // Demo playback state
 let demoInterval = null;
@@ -16,8 +17,8 @@ let currentDemo = null;
  * Play a demo by name
  */
 export function playDemo(name) {
-    // Stop any playing imported song first
-    stopImportedSong();
+    // Stop any other playback first
+    stopAllExcept('demo');
     stopDemo();
 
     const demo = demos[name];
@@ -167,6 +168,9 @@ export function stopDemo() {
  * Initialize demo buttons
  */
 export function initDemoButtons() {
+    // Register stop function with playback manager
+    registerStopFunction('demo', stopDemo);
+
     document.querySelectorAll('.demo-btn[data-demo]').forEach(btn => {
         btn.addEventListener('click', () => {
             const demoName = btn.dataset.demo;

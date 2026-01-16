@@ -6,7 +6,7 @@ import { noteOn, noteOff, releaseVoice } from '../audio/voice-manager.js';
 import { loadPreset } from '../presets/preset-manager.js';
 import { presets } from '../presets/built-in.js';
 import { noteNameToMidi } from '../utils/note-converter.js';
-import { stopDemo } from './demo-player.js';
+import { registerStopFunction, stopAllExcept } from './playback-manager.js';
 
 // Imported song state
 let importedSong = null;
@@ -60,8 +60,8 @@ export function playImportedSong() {
         return;
     }
 
-    // Stop any playing demo first
-    stopDemo();
+    // Stop any other playback first
+    stopAllExcept('song');
     stopImportedSong();
     initAudio();
 
@@ -130,6 +130,9 @@ export function stopImportedSong() {
  * Initialize song player UI
  */
 export function initSongPlayer() {
+    // Register stop function with playback manager
+    registerStopFunction('song', stopImportedSong);
+
     const importBtn = document.getElementById('import-song-btn');
     const playBtn = document.getElementById('play-song-btn');
 
