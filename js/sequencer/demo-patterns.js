@@ -1,12 +1,12 @@
 // Moog Modular Synthesizer - Demo Pattern Definitions
 
 export const demos = {
-    chase: {
+    arpeggio: {
         preset: 'lead',
         bpm: 130,
         loop: true,
         pattern: [
-            // E minor arpeggio - classic Chase style
+            // E minor arpeggio
             { note: 64, time: 0, duration: 100 },      // E4
             { note: 67, time: 115, duration: 100 },    // G4
             { note: 71, time: 230, duration: 100 },    // B4
