@@ -166,5 +166,11 @@ export const demos = {
         bpm: 108,
         loop: false,
         file: 'songs/beethoven_fifth_complex.txt'  // Load full song from file
+    },
+    thechase: {
+        preset: 'lead',
+        bpm: 130,
+        loop: false,
+        file: 'songs/the_chase.txt'  // Load full song from file
     }
 };
