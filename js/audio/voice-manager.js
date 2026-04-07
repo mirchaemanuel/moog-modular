@@ -8,6 +8,42 @@ import { initAudio } from './audio-context.js';
 import { recordNoteOn, recordNoteOff } from '../recorder/song-recorder.js';
 import { startScope, stopScope } from '../ui/visualizations.js';
 
+// Audio constants
+const OSC_GAIN_SCALE = 0.3;
+const CENTS_PER_SEMITONE = 1200;
+const C4_FREQUENCY = 261.63;
+const RESONANCE_SCALE = 5;
+
+/**
+ * Connect an LFO to a voice's modulation destination
+ */
+function connectLfo(voice, lfoState, lfoGainNode) {
+    if (lfoState.amount <= 0) return;
+
+    const amount = lfoState.amount;
+    if (lfoState.dest === 'pitch') {
+        voice.oscs.forEach(osc => {
+            const gain = audioCtx.createGain();
+            gain.gain.value = amount * 2;
+            lfoGainNode.connect(gain);
+            gain.connect(osc.detune);
+            voice.lfoConnections.push(gain);
+        });
+    } else if (lfoState.dest === 'filter') {
+        const gain = audioCtx.createGain();
+        gain.gain.value = amount * 20;
+        lfoGainNode.connect(gain);
+        gain.connect(voice.filter.detune);
+        voice.lfoConnections.push(gain);
+    } else if (lfoState.dest === 'amp') {
+        const gain = audioCtx.createGain();
+        gain.gain.value = amount / 200;
+        lfoGainNode.connect(gain);
+        gain.connect(voice.vca.gain);
+        voice.lfoConnections.push(gain);
+    }
+}
+
 /**
  * Create a voice with oscillators, filter, and envelopes
  */
@@ -28,7 +64,7 @@ export function createVoice(frequency, velocity = 1) {
         const gain = audioCtx.createGain();
 
         osc.type = vcoState.wave;
-        const oscFreq = frequency * Math.pow(2, vcoState.octave) * Math.pow(2, vcoState.detune / 1200);
+        const oscFreq = frequency * Math.pow(2, vcoState.octave) * Math.pow(2, vcoState.detune / CENTS_PER_SEMITONE);
 
         if (state.master.glide > 0 && lastFrequency) {
             osc.frequency.setValueAtTime(lastFrequency * Math.pow(2, vcoState.octave), audioCtx.currentTime);
@@ -37,7 +73,7 @@ export function createVoice(frequency, velocity = 1) {
             osc.frequency.value = oscFreq;
         }
 
-        gain.gain.value = (state.mixer[`vco${i}`] / 100) * 0.3;
+        gain.gain.value = (state.mixer[`vco${i}`] / 100) * OSC_GAIN_SCALE;
 
         osc.connect(gain);
         voice.oscs.push(osc);
@@ -50,12 +86,12 @@ export function createVoice(frequency, velocity = 1) {
 
     const kbdTrackAmount = state.filter.kbdTrack / 100;
     const baseCutoff = state.filter.cutoff;
-    const freqRatio = frequency / 261.63; // C4 reference
+    const freqRatio = frequency / C4_FREQUENCY;
     const kbdCutoffMod = Math.pow(freqRatio, kbdTrackAmount);
     voice.filterEnvTarget = Math.min(baseCutoff * kbdCutoffMod, 20000);
 
     voice.filter.frequency.value = voice.filterEnvTarget;
-    voice.filter.Q.value = state.filter.resonance / 5;
+    voice.filter.Q.value = state.filter.resonance / RESONANCE_SCALE;
 
     // VCA
     voice.vca = audioCtx.createGain();
@@ -66,7 +102,7 @@ export function createVoice(frequency, velocity = 1) {
 
     // Connect noise (per-voice gain to compensate for shared noise node)
     voice.noiseVoiceGain = audioCtx.createGain();
-    voice.noiseVoiceGain.gain.value = (state.mixer.noise / 100) * 0.3;
+    voice.noiseVoiceGain.gain.value = (state.mixer.noise / 100) * OSC_GAIN_SCALE;
     noiseGain.connect(voice.noiseVoiceGain);
     voice.noiseVoiceGain.connect(voice.filter);
 
@@ -98,58 +134,9 @@ export function createVoice(frequency, velocity = 1) {
     // Start oscillators
     voice.oscs.forEach(osc => osc.start());
 
-    // Connect LFOs to destinations
-    // LFO 1 connections
-    if (state.lfo1.amount > 0) {
-        const lfo1Amount = state.lfo1.amount;
-        if (state.lfo1.dest === 'pitch') {
-            voice.oscs.forEach(osc => {
-                const lfo1ToPitch = audioCtx.createGain();
-                lfo1ToPitch.gain.value = lfo1Amount * 2; // cents
-                lfo1Gain.connect(lfo1ToPitch);
-                lfo1ToPitch.connect(osc.detune);
-                voice.lfoConnections.push(lfo1ToPitch);
-            });
-        } else if (state.lfo1.dest === 'filter') {
-            const lfo1ToFilter = audioCtx.createGain();
-            lfo1ToFilter.gain.value = lfo1Amount * 20; // Hz variation
-            lfo1Gain.connect(lfo1ToFilter);
-            lfo1ToFilter.connect(voice.filter.detune);
-            voice.lfoConnections.push(lfo1ToFilter);
-        } else if (state.lfo1.dest === 'amp') {
-            const lfo1ToAmp = audioCtx.createGain();
-            lfo1ToAmp.gain.value = lfo1Amount / 200;
-            lfo1Gain.connect(lfo1ToAmp);
-            lfo1ToAmp.connect(voice.vca.gain);
-            voice.lfoConnections.push(lfo1ToAmp);
-        }
-    }
-
-    // LFO 2 connections
-    if (state.lfo2.amount > 0) {
-        const lfo2Amount = state.lfo2.amount;
-        if (state.lfo2.dest === 'pitch') {
-            voice.oscs.forEach(osc => {
-                const lfo2ToPitch = audioCtx.createGain();
-                lfo2ToPitch.gain.value = lfo2Amount * 2;
-                lfo2Gain.connect(lfo2ToPitch);
-                lfo2ToPitch.connect(osc.detune);
-                voice.lfoConnections.push(lfo2ToPitch);
-            });
-        } else if (state.lfo2.dest === 'filter') {
-            const lfo2ToFilter = audioCtx.createGain();
-            lfo2ToFilter.gain.value = lfo2Amount * 20;
-            lfo2Gain.connect(lfo2ToFilter);
-            lfo2ToFilter.connect(voice.filter.detune);
-            voice.lfoConnections.push(lfo2ToFilter);
-        } else if (state.lfo2.dest === 'amp') {
-            const lfo2ToAmp = audioCtx.createGain();
-            lfo2ToAmp.gain.value = lfo2Amount / 200;
-            lfo2Gain.connect(lfo2ToAmp);
-            lfo2ToAmp.connect(voice.vca.gain);
-            voice.lfoConnections.push(lfo2ToAmp);
-        }
-    }
+    // Connect LFOs to voice destinations
+    connectLfo(voice, state.lfo1, lfo1Gain);
+    connectLfo(voice, state.lfo2, lfo2Gain);
 
     setLastFrequency(frequency);
     return voice;

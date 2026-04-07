@@ -8,6 +8,10 @@ import {
 } from '../state.js';
 import { drawEnvelope } from '../ui/visualizations.js';
 
+const OSC_GAIN_SCALE = 0.3;
+const CENTS_PER_SEMITONE = 1200;
+const RESONANCE_SCALE = 5;
+
 /**
  * Update all active voices in real-time (frequency, filter, gains)
  */
@@ -16,19 +20,17 @@ export function updateActiveVoices() {
     const now = audioCtx.currentTime;
 
     voices.forEach((voice, note) => {
-        // Update oscillator frequencies and detune
         const baseFreq = 440 * Math.pow(2, (note - 69) / 12);
 
         for (let i = 0; i < 3; i++) {
             const vcoState = state[`vco${i + 1}`];
-            const oscFreq = baseFreq * Math.pow(2, vcoState.octave) * Math.pow(2, vcoState.detune / 1200);
+            const oscFreq = baseFreq * Math.pow(2, vcoState.octave) * Math.pow(2, vcoState.detune / CENTS_PER_SEMITONE);
             voice.oscs[i].frequency.setTargetAtTime(oscFreq, now, 0.01);
-            voice.gains[i].gain.setTargetAtTime((state.mixer[`vco${i + 1}`] / 100) * 0.3, now, 0.01);
+            voice.gains[i].gain.setTargetAtTime((state.mixer[`vco${i + 1}`] / 100) * OSC_GAIN_SCALE, now, 0.01);
         }
 
-        // Update filter in real-time
         voice.filter.frequency.setTargetAtTime(state.filter.cutoff, now, 0.02);
-        voice.filter.Q.setTargetAtTime(state.filter.resonance / 5, now, 0.02);
+        voice.filter.Q.setTargetAtTime(state.filter.resonance / RESONANCE_SCALE, now, 0.02);
     });
 }
 
@@ -117,7 +119,7 @@ export function applyParameter(param, value) {
             break;
         case 'noise':
             state.mixer.noise = value;
-            if (noiseGain) noiseGain.gain.value = (value / 100) * 0.3;
+            if (noiseGain) noiseGain.gain.value = (value / 100) * OSC_GAIN_SCALE;
             break;
         case 'cutoff':
             state.filter.cutoff = value;

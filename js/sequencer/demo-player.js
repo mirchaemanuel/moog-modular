@@ -53,44 +53,14 @@ export function playDemo(name) {
         return;
     }
 
-    // Schedule notes from inline pattern
-    function schedulePattern() {
-        demo.pattern.forEach(event => {
-            const noteOnTimeout = setTimeout(() => {
-                if (currentDemo !== name) return;
-                noteOn(event.note);
-                // Visual feedback on keyboard
-                const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
-                if (keyEl) keyEl.classList.add('pressed');
-            }, event.time);
-
-            const noteOffTimeout = setTimeout(() => {
-                if (currentDemo !== name) return;
-                noteOff(event.note);
-                const keyEl = document.querySelector(`[data-midi="${event.note}"]`);
-                if (keyEl) keyEl.classList.remove('pressed');
-            }, event.time + event.duration);
-
-            demoTimeouts.push(noteOnTimeout, noteOffTimeout);
-        });
-
-        if (demo.loop) {
-            demoInterval = setTimeout(() => {
-                if (currentDemo === name) {
-                    schedulePattern();
-                }
-            }, demo.loopLength);
-        }
-    }
-
-    schedulePattern();
+    scheduleNotesLoop(name, demo.pattern, demo.loop, demo.loopLength);
 }
 
 /**
- * Play demo from parsed notes array
+ * Schedule note events with optional looping
  */
-export function playDemoFromNotes(name, notes, loop, loopLength) {
-    function scheduleNotes() {
+function scheduleNotesLoop(name, notes, loop, loopLength) {
+    function schedule() {
         notes.forEach(event => {
             const noteOnTimeout = setTimeout(() => {
                 if (currentDemo !== name) return;
@@ -111,22 +81,24 @@ export function playDemoFromNotes(name, notes, loop, loopLength) {
 
         if (loop && loopLength) {
             demoInterval = setTimeout(() => {
-                if (currentDemo === name) {
-                    scheduleNotes();
-                }
+                if (currentDemo === name) schedule();
             }, loopLength);
-        } else {
-            // Auto-stop after song ends
+        } else if (!loop) {
             const maxTime = Math.max(...notes.map(n => n.time + n.duration));
             demoInterval = setTimeout(() => {
-                if (currentDemo === name) {
-                    stopDemo();
-                }
+                if (currentDemo === name) stopDemo();
             }, maxTime + 500);
         }
     }
 
-    scheduleNotes();
+    schedule();
+}
+
+/**
+ * Play demo from parsed notes array
+ */
+export function playDemoFromNotes(name, notes, loop, loopLength) {
+    scheduleNotesLoop(name, notes, loop, loopLength);
 }
 
 /**
