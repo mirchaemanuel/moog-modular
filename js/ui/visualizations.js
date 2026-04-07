@@ -13,13 +13,19 @@ export function drawOscilloscope() {
     const width = canvas.width;
     const height = canvas.height;
 
+    let bufferLength = 0;
+    let dataArray = null;
+
     function draw() {
         requestAnimationFrame(draw);
 
         if (!analyser) return;
 
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
+        // Allocate buffer once, or reallocate if analyser changes
+        if (bufferLength !== analyser.frequencyBinCount) {
+            bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+        }
         analyser.getByteTimeDomainData(dataArray);
 
         ctx.fillStyle = '#001a00';
