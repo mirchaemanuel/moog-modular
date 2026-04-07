@@ -6,7 +6,6 @@ import { noteOn, noteOff } from '../audio/voice-manager.js';
 // Keyboard mapping constants
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const BLACK_NOTES = [1, 3, 6, 8, 10]; // Indices of black keys in octave
-const WHITE_KEY_WIDTH = 28;
 const BASE_NOTE = 60; // C4
 
 // Base keyboard mapping (relative offsets from base note)
@@ -71,7 +70,8 @@ export function createKeyboard() {
 
         if (isBlack) {
             key.className = 'black-key';
-            key.style.left = `${whiteKeyIndex * WHITE_KEY_WIDTH - 9}px`;
+            // Position calculated after append, see below
+            key.dataset.whiteIndex = whiteKeyIndex;
         } else {
             key.className = 'white-key';
 
@@ -105,6 +105,15 @@ export function createKeyboard() {
 
         keyboard.appendChild(key);
     }
+
+    // Position black keys based on actual white key width
+    const firstWhite = keyboard.querySelector('.white-key');
+    const whiteW = firstWhite ? firstWhite.offsetWidth : 28;
+    const blackOffset = Math.round(whiteW * 0.32);
+    keyboard.querySelectorAll('.black-key').forEach(bk => {
+        const idx = parseInt(bk.dataset.whiteIndex);
+        bk.style.left = `${idx * whiteW - blackOffset}px`;
+    });
 
     // Initial label setup
     updateKeyboardLabels();

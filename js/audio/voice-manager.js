@@ -6,7 +6,6 @@ import {
 } from '../state.js';
 import { initAudio } from './audio-context.js';
 import { recordNoteOn, recordNoteOff } from '../recorder/song-recorder.js';
-import { startScope, stopScope } from '../ui/visualizations.js';
 
 // Audio constants
 const OSC_GAIN_SCALE = 0.3;
@@ -217,7 +216,6 @@ export function noteOn(note, velocity = 1) {
     document.getElementById('vco2-led')?.classList.add('on');
     document.getElementById('vco3-led')?.classList.add('on');
     document.getElementById('master-led')?.classList.add('on');
-    startScope();
 }
 
 /**
@@ -238,6 +236,5 @@ export function noteOff(note) {
         document.getElementById('vco2-led')?.classList.remove('on');
         document.getElementById('vco3-led')?.classList.remove('on');
         document.getElementById('master-led')?.classList.remove('on');
-        stopScope();
     }
 }

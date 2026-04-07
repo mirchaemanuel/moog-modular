@@ -8,6 +8,7 @@ import {
     setNoiseNode, setNoiseGain,
     setLfo1Osc, setLfo1Gain, setLfo2Osc, setLfo2Gain
 } from '../state.js';
+import { drawOscilloscope } from '../ui/visualizations.js';
 
 /**
  * Create white noise generator
@@ -143,4 +144,6 @@ export function initAudio() {
     setLfo2Osc(lfo2OscNode);
     setLfo2Gain(lfo2GainNode);
 
+    // Start oscilloscope (runs continuously like a real scope)
+    drawOscilloscope();
 }
