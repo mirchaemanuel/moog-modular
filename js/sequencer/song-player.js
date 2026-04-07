@@ -42,7 +42,9 @@ export function parseSongText(text) {
             const duration = parseInt(parts[2]);
             const midi = noteNameToMidi(noteName);
 
-            if (!isNaN(time) && midi !== null && !isNaN(duration)) {
+            if (!isNaN(time) && midi !== null && !isNaN(duration)
+                && time >= 0 && time <= 600000
+                && duration > 0 && duration <= 30000) {
                 song.notes.push({ note: midi, time, duration });
             }
         }

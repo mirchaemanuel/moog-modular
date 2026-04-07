@@ -23,7 +23,7 @@ export function updateActiveVoices() {
             const vcoState = state[`vco${i + 1}`];
             const oscFreq = baseFreq * Math.pow(2, vcoState.octave) * Math.pow(2, vcoState.detune / 1200);
             voice.oscs[i].frequency.setTargetAtTime(oscFreq, now, 0.01);
-            voice.gains[i].gain.setTargetAtTime(state.mixer[`vco${i + 1}`] * 0.3, now, 0.01);
+            voice.gains[i].gain.setTargetAtTime((state.mixer[`vco${i + 1}`] / 100) * 0.3, now, 0.01);
         }
 
         // Update filter in real-time
@@ -33,26 +33,29 @@ export function updateActiveVoices() {
 }
 
 /**
- * Update envelope sustain levels in real-time
+ * Update envelope sustain levels in real-time.
+ * Uses setTargetAtTime with a smooth time constant to avoid audio clicks
+ * from abruptly cancelling in-progress attack/decay ramps.
  */
 export function updateActiveEnvelopes() {
     if (!audioCtx) return;
     const now = audioCtx.currentTime;
+    const smoothing = 0.05; // 50ms time constant for smooth transitions
 
     voices.forEach((voice) => {
-        // Update amp envelope sustain level
+        // Only update if voice is past attack+decay (in sustain phase)
+        // Otherwise let the original envelope finish naturally
         const ampSustain = state.ampEnv.sustain / 100;
         voice.vca.gain.cancelScheduledValues(now);
-        voice.vca.gain.setTargetAtTime(ampSustain, now, 0.03);
+        voice.vca.gain.setTargetAtTime(ampSustain, now, smoothing);
 
-        // Update filter envelope sustain level
         const filterEnvAmount = (state.filter.envAmount / 100) * state.filter.cutoff;
         const filterStart = Math.max(state.filter.cutoff - filterEnvAmount, 20);
         const filterPeak = Math.min(state.filter.cutoff + filterEnvAmount * 0.5, 20000);
         const filterSustain = filterStart + (filterPeak - filterStart) * (state.filterEnv.sustain / 100);
 
         voice.filter.frequency.cancelScheduledValues(now);
-        voice.filter.frequency.setTargetAtTime(Math.max(filterSustain, 20), now, 0.03);
+        voice.filter.frequency.setTargetAtTime(Math.max(filterSustain, 20), now, smoothing);
     });
 }
 
@@ -101,20 +104,20 @@ export function applyParameter(param, value) {
             break;
         case 'vco3-pw': state.vco3.pw = value; break;
         case 'mix1':
-            state.mixer.vco1 = value / 100;
+            state.mixer.vco1 = value;
             updateActiveVoices();
             break;
         case 'mix2':
-            state.mixer.vco2 = value / 100;
+            state.mixer.vco2 = value;
             updateActiveVoices();
             break;
         case 'mix3':
-            state.mixer.vco3 = value / 100;
+            state.mixer.vco3 = value;
             updateActiveVoices();
             break;
         case 'noise':
-            state.mixer.noise = value / 100;
-            if (noiseGain) noiseGain.gain.value = value / 100 * 0.3;
+            state.mixer.noise = value;
+            if (noiseGain) noiseGain.gain.value = (value / 100) * 0.3;
             break;
         case 'cutoff':
             state.filter.cutoff = value;
@@ -183,8 +186,8 @@ export function applyParameter(param, value) {
             if (delayNode) delayNode.delayTime.value = value / 1000;
             break;
         case 'delay-feedback':
-            state.effects.delayFeedback = value;
-            if (delayFeedback) delayFeedback.gain.value = value / 100;
+            state.effects.delayFeedback = Math.min(value, 95);
+            if (delayFeedback) delayFeedback.gain.value = Math.min(value, 95) / 100;
             break;
         case 'delay-mix':
             state.effects.delayMix = value;

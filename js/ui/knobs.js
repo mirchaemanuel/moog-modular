@@ -54,64 +54,98 @@ export function updateKnobValue(param, value) {
 }
 
 /**
- * Initialize all knobs with drag interaction
+ * Compute new knob value from drag delta
+ */
+function computeKnobValue(startValue, deltaY, min, max, isLog) {
+    const sensitivity = isLog ? 0.5 : 1;
+    if (isLog) {
+        const logMin = Math.log(min);
+        const logMax = Math.log(max);
+        const logStart = Math.log(startValue);
+        const logRange = logMax - logMin;
+        const newLogValue = logStart + (deltaY / 200) * logRange * sensitivity;
+        return Math.exp(Math.max(logMin, Math.min(logMax, newLogValue)));
+    } else {
+        const range = max - min;
+        return Math.max(min, Math.min(max, startValue + (deltaY / 200) * range * sensitivity));
+    }
+}
+
+/**
+ * Initialize all knobs with drag interaction (single delegated handler + touch support)
  */
 export function initKnobs() {
-    const knobs = document.querySelectorAll('.knob');
+    let activeKnob = null;
+    let startY = 0;
+    let startValue = 0;
 
-    knobs.forEach(knob => {
+    // Set initial rotation and display for all knobs
+    document.querySelectorAll('.knob').forEach(knob => {
         const param = knob.dataset.param;
         const min = parseFloat(knob.dataset.min);
         const max = parseFloat(knob.dataset.max);
-        let value = parseFloat(knob.dataset.value);
+        const value = parseFloat(knob.dataset.value);
         const isLog = knob.dataset.log === 'true';
 
         updateKnobRotation(knob, value, min, max, isLog);
         updateKnobValue(param, value);
-
-        let isDragging = false;
-        let startY = 0;
-        let startValue = 0;
-
-        knob.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startY = e.clientY;
-            startValue = value;
-            e.preventDefault();
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-
-            const deltaY = startY - e.clientY;
-            const range = max - min;
-            const sensitivity = isLog ? 0.5 : 1;
-
-            if (isLog) {
-                const logMin = Math.log(min);
-                const logMax = Math.log(max);
-                const logStart = Math.log(startValue);
-                const logRange = logMax - logMin;
-                const newLogValue = logStart + (deltaY / 200) * logRange * sensitivity;
-                value = Math.exp(Math.max(logMin, Math.min(logMax, newLogValue)));
-            } else {
-                value = startValue + (deltaY / 200) * range * sensitivity;
-                value = Math.max(min, Math.min(max, value));
-            }
-
-            // Round for certain parameters
-            if (param.includes('octave')) {
-                value = Math.round(value);
-            }
-
-            knob.dataset.value = value;
-            updateKnobRotation(knob, value, min, max, isLog);
-            updateKnobValue(param, value);
-            applyParameter(param, value);
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
     });
+
+    function onDragStart(knob, clientY) {
+        activeKnob = knob;
+        startY = clientY;
+        startValue = parseFloat(knob.dataset.value);
+    }
+
+    function onDragMove(clientY) {
+        if (!activeKnob) return;
+        const knob = activeKnob;
+        const param = knob.dataset.param;
+        const min = parseFloat(knob.dataset.min);
+        const max = parseFloat(knob.dataset.max);
+        const isLog = knob.dataset.log === 'true';
+
+        const deltaY = startY - clientY;
+        let value = computeKnobValue(startValue, deltaY, min, max, isLog);
+
+        if (param.includes('octave')) {
+            value = Math.round(value);
+        }
+
+        knob.dataset.value = value;
+        updateKnobRotation(knob, value, min, max, isLog);
+        updateKnobValue(param, value);
+        applyParameter(param, value);
+    }
+
+    function onDragEnd() {
+        activeKnob = null;
+    }
+
+    // Mouse events — single delegated handler
+    document.addEventListener('mousedown', (e) => {
+        const knob = e.target.closest('.knob');
+        if (knob) {
+            onDragStart(knob, e.clientY);
+            e.preventDefault();
+        }
+    });
+    document.addEventListener('mousemove', (e) => onDragMove(e.clientY));
+    document.addEventListener('mouseup', onDragEnd);
+
+    // Touch events
+    document.addEventListener('touchstart', (e) => {
+        const knob = e.target.closest('.knob');
+        if (knob) {
+            onDragStart(knob, e.touches[0].clientY);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    document.addEventListener('touchmove', (e) => {
+        if (activeKnob) {
+            onDragMove(e.touches[0].clientY);
+            e.preventDefault();
+        }
+    }, { passive: false });
+    document.addEventListener('touchend', onDragEnd);
 }

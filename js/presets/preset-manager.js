@@ -168,7 +168,13 @@ export function loadPresetData(preset) {
     updateActiveWaveforms();
 }
 
-// Make loadPreset available globally for onclick handlers
-if (typeof window !== 'undefined') {
-    window.loadPreset = loadPreset;
+/**
+ * Initialize built-in preset buttons
+ */
+export function initPresetButtons() {
+    document.querySelectorAll('.preset-btn[data-preset]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            loadPreset(btn.dataset.preset);
+        });
+    });
 }
