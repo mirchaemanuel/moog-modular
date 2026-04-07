@@ -6,6 +6,7 @@ import {
 } from '../state.js';
 import { initAudio } from './audio-context.js';
 import { recordNoteOn, recordNoteOff } from '../recorder/song-recorder.js';
+import { startScope, stopScope } from '../ui/visualizations.js';
 
 /**
  * Create a voice with oscillators, filter, and envelopes
@@ -36,7 +37,7 @@ export function createVoice(frequency, velocity = 1) {
             osc.frequency.value = oscFreq;
         }
 
-        gain.gain.value = state.mixer[`vco${i}`] * 0.3;
+        gain.gain.value = (state.mixer[`vco${i}`] / 100) * 0.3;
 
         osc.connect(gain);
         voice.oscs.push(osc);
@@ -63,8 +64,11 @@ export function createVoice(frequency, velocity = 1) {
     // Connect oscillators to filter
     voice.gains.forEach(g => g.connect(voice.filter));
 
-    // Connect noise
-    noiseGain.connect(voice.filter);
+    // Connect noise (per-voice gain to compensate for shared noise node)
+    voice.noiseVoiceGain = audioCtx.createGain();
+    voice.noiseVoiceGain.gain.value = (state.mixer.noise / 100) * 0.3;
+    noiseGain.connect(voice.noiseVoiceGain);
+    voice.noiseVoiceGain.connect(voice.filter);
 
     // Connect filter to VCA
     voice.filter.connect(voice.vca);
@@ -165,7 +169,10 @@ function cleanupVoice(voice) {
     voice.lfoConnections.forEach(node => {
         try { node.disconnect(); } catch(e) {}
     });
-    try { noiseGain.disconnect(voice.filter); } catch(e) {}
+    if (voice.noiseVoiceGain) {
+        try { noiseGain.disconnect(voice.noiseVoiceGain); } catch(e) {}
+        try { voice.noiseVoiceGain.disconnect(); } catch(e) {}
+    }
     try { voice.filter.disconnect(); } catch(e) {}
     try { voice.vca.disconnect(); } catch(e) {}
     voice.oscs = [];
@@ -218,11 +225,12 @@ export function noteOn(note, velocity = 1) {
     const voice = createVoice(frequency, velocity);
     voices.set(note, voice);
 
-    // Update LEDs
+    // Update LEDs and start oscilloscope
     document.getElementById('vco1-led')?.classList.add('on');
     document.getElementById('vco2-led')?.classList.add('on');
     document.getElementById('vco3-led')?.classList.add('on');
     document.getElementById('master-led')?.classList.add('on');
+    startScope();
 }
 
 /**
@@ -243,5 +251,6 @@ export function noteOff(note) {
         document.getElementById('vco2-led')?.classList.remove('on');
         document.getElementById('vco3-led')?.classList.remove('on');
         document.getElementById('master-led')?.classList.remove('on');
+        stopScope();
     }
 }

@@ -39,7 +39,7 @@ export const state = {
     vco1: { wave: 'sawtooth', octave: 0, detune: 0, pw: 50 },
     vco2: { wave: 'sawtooth', octave: 0, detune: 5, pw: 50 },
     vco3: { wave: 'square', octave: -1, detune: 0, pw: 50 },
-    mixer: { vco1: 0.8, vco2: 0.6, vco3: 0.4, noise: 0 },
+    mixer: { vco1: 80, vco2: 60, vco3: 40, noise: 0 },
     filter: { cutoff: 2000, resonance: 30, envAmount: 50, kbdTrack: 50 },
     filterEnv: { attack: 10, decay: 300, sustain: 30, release: 500 },
     ampEnv: { attack: 10, decay: 200, sustain: 70, release: 300 },

@@ -14,7 +14,7 @@ import { drawEnvelope } from './ui/visualizations.js';
 import { initWaveSelectors } from './ui/wave-selectors.js';
 
 // Presets
-import { loadPreset } from './presets/preset-manager.js';
+import { loadPreset, initPresetButtons } from './presets/preset-manager.js';
 import { initPresetManager } from './presets/user-presets.js';
 
 // Sequencer
@@ -36,6 +36,9 @@ function init() {
 
     // Initialize wave selectors
     initWaveSelectors();
+
+    // Initialize preset buttons
+    initPresetButtons();
 
     // Initialize demo buttons
     initDemoButtons();

@@ -29,10 +29,10 @@ export function getCurrentStateAsPreset() {
         vco2: { wave: state.vco2.wave, octave: state.vco2.octave, detune: state.vco2.detune },
         vco3: { wave: state.vco3.wave, octave: state.vco3.octave, detune: state.vco3.detune },
         mixer: {
-            vco1: Math.round(state.mixer.vco1 * 100),
-            vco2: Math.round(state.mixer.vco2 * 100),
-            vco3: Math.round(state.mixer.vco3 * 100),
-            noise: Math.round(state.mixer.noise * 100)
+            vco1: Math.round(state.mixer.vco1),
+            vco2: Math.round(state.mixer.vco2),
+            vco3: Math.round(state.mixer.vco3),
+            noise: Math.round(state.mixer.noise)
         },
         filter: {
             cutoff: state.filter.cutoff,

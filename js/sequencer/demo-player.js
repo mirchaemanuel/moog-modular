@@ -1,6 +1,6 @@
 // Moog Modular Synthesizer - Demo Player
 
-import { audioCtx, voices } from '../state.js';
+import { voices } from '../state.js';
 import { initAudio } from '../audio/audio-context.js';
 import { noteOn, noteOff, releaseVoice } from '../audio/voice-manager.js';
 import { loadPreset } from '../presets/preset-manager.js';
