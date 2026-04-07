@@ -483,7 +483,14 @@
             <img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png" alt="CC BY-SA 4.0" style="border:0;">
             CC BY-SA 4.0
         </a>
+        <br>
+        <span id="app-version" style="opacity:0.5;font-size:0.85em;margin-top:4px;display:inline-block;"></span>
     </footer>
+    <script>
+        fetch('version.json').then(r=>r.json()).then(d=>{
+            document.getElementById('app-version').textContent='v'+d.version;
+        }).catch(()=>{});
+    </script>
 
     <!-- Main Application Script -->
     <script type="module" src="js/app.js"></script>
