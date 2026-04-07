@@ -152,6 +152,28 @@ export function createVoice(frequency, velocity = 1) {
 }
 
 /**
+ * Fully disconnect and clean up all audio nodes in a voice
+ */
+function cleanupVoice(voice) {
+    voice.oscs.forEach(osc => {
+        try { osc.stop(); } catch(e) {}
+        try { osc.disconnect(); } catch(e) {}
+    });
+    voice.gains.forEach(g => {
+        try { g.disconnect(); } catch(e) {}
+    });
+    voice.lfoConnections.forEach(node => {
+        try { node.disconnect(); } catch(e) {}
+    });
+    try { noiseGain.disconnect(voice.filter); } catch(e) {}
+    try { voice.filter.disconnect(); } catch(e) {}
+    try { voice.vca.disconnect(); } catch(e) {}
+    voice.oscs = [];
+    voice.gains = [];
+    voice.lfoConnections = [];
+}
+
+/**
  * Release a voice with envelope release
  */
 export function releaseVoice(voice) {
@@ -167,11 +189,10 @@ export function releaseVoice(voice) {
     voice.filter.frequency.setValueAtTime(voice.filter.frequency.value, now);
     voice.filter.frequency.linearRampToValueAtTime(20, now + filterReleaseTime);
 
-    setTimeout(() => {
-        voice.oscs.forEach(osc => {
-            try { osc.stop(); } catch(e) {}
-        });
-    }, Math.max(releaseTime, filterReleaseTime) * 1000 + 100);
+    const cleanupDelay = Math.max(releaseTime, filterReleaseTime) * 1000 + 100;
+    voice._cleanupTimer = setTimeout(() => {
+        cleanupVoice(voice);
+    }, cleanupDelay);
 }
 
 /**
@@ -180,7 +201,15 @@ export function releaseVoice(voice) {
 export function noteOn(note, velocity = 1) {
     initAudio();
 
-    if (voices.has(note)) return;
+    // If same note is still releasing, force-cleanup the old voice immediately
+    if (voices.has(note)) {
+        const oldVoice = voices.get(note);
+        if (oldVoice._cleanupTimer) {
+            clearTimeout(oldVoice._cleanupTimer);
+        }
+        cleanupVoice(oldVoice);
+        voices.delete(note);
+    }
 
     // Record note if recording
     recordNoteOn(note);
