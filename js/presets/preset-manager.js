@@ -27,51 +27,7 @@ function setKnob(param, value) {
 export function loadPreset(name) {
     const preset = presets[name];
     if (!preset) return;
-
-    // VCOs
-    for (let i = 1; i <= 3; i++) {
-        const vco = preset[`vco${i}`];
-        setKnob(`vco${i}-octave`, vco.octave);
-        setKnob(`vco${i}-detune`, vco.detune);
-
-        // Set wave
-        document.querySelectorAll(`.wave-btn[data-vco="${i}"]`).forEach(b => {
-            b.classList.toggle('active', b.dataset.wave === vco.wave);
-        });
-        state[`vco${i}`].wave = vco.wave;
-    }
-
-    // Mixer
-    setKnob('mix1', preset.mixer.vco1);
-    setKnob('mix2', preset.mixer.vco2);
-    setKnob('mix3', preset.mixer.vco3);
-    setKnob('noise', preset.mixer.noise);
-
-    // Filter
-    setKnob('cutoff', preset.filter.cutoff);
-    setKnob('resonance', preset.filter.resonance);
-    setKnob('filter-env', preset.filter.envAmount);
-    setKnob('filter-kbd', preset.filter.kbdTrack);
-
-    // Envelopes
-    setKnob('f-attack', preset.filterEnv.attack);
-    setKnob('f-decay', preset.filterEnv.decay);
-    setKnob('f-sustain', preset.filterEnv.sustain);
-    setKnob('f-release', preset.filterEnv.release);
-
-    setKnob('a-attack', preset.ampEnv.attack);
-    setKnob('a-decay', preset.ampEnv.decay);
-    setKnob('a-sustain', preset.ampEnv.sustain);
-    setKnob('a-release', preset.ampEnv.release);
-
-    // Effects
-    setKnob('delay-time', preset.effects.delayTime);
-    setKnob('delay-feedback', preset.effects.delayFeedback);
-    setKnob('delay-mix', preset.effects.delayMix);
-    setKnob('reverb-mix', preset.effects.reverbMix);
-
-    // Glide
-    setKnob('glide', preset.glide);
+    loadPresetData(preset);
 }
 
 /**

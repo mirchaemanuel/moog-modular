@@ -56,3 +56,4 @@ export const voices = new Map();
 // Last frequency for glide
 export let lastFrequency = null;
 export function setLastFrequency(freq) { lastFrequency = freq; }
+export function setOctaveShift(value) { state.octaveShift = value; }

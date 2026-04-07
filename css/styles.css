@@ -399,6 +399,13 @@ body {
     background: #001a00;
     border-radius: 5px;
     display: block;
+    width: 100%;
+    height: auto;
+}
+
+canvas[id$="-env-display"] {
+    max-width: 100%;
+    height: auto;
 }
 
 .scope-label {

@@ -1,0 +1,16 @@
+{
+    "name": "Moog Modular Synthesizer",
+    "short_name": "Moog Modular",
+    "description": "A virtual Moog Modular Synthesizer with 3 VCOs, ladder filter, ADSR envelopes, LFOs and effects.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f0f1a",
+    "theme_color": "#1a1a2e",
+    "icons": [
+        {
+            "src": "screenshot.png",
+            "sizes": "any",
+            "type": "image/png"
+        }
+    ]
+}

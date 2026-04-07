@@ -95,15 +95,16 @@ export function playImportedSong() {
         playBtn.classList.add('playing');
     }
 
-    // Auto-reset after song ends
+    // Auto-reset after song ends (tracked so it can be cleared on stop)
     const maxTime = Math.max(...importedSong.notes.map(n => n.time + n.duration));
-    setTimeout(() => {
+    const autoResetTimeout = setTimeout(() => {
         const playBtn = document.getElementById('play-song-btn');
         if (playBtn) {
             playBtn.textContent = '▶️ PLAY';
             playBtn.classList.remove('playing');
         }
     }, maxTime + 100);
+    importedSongTimeouts.push(autoResetTimeout);
 }
 
 /**

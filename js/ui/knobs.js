@@ -79,13 +79,21 @@ export function initKnobs() {
     let startY = 0;
     let startValue = 0;
 
-    // Set initial rotation and display for all knobs
+    // Set initial rotation, display, and accessibility for all knobs
     document.querySelectorAll('.knob').forEach(knob => {
         const param = knob.dataset.param;
         const min = parseFloat(knob.dataset.min);
         const max = parseFloat(knob.dataset.max);
         const value = parseFloat(knob.dataset.value);
         const isLog = knob.dataset.log === 'true';
+
+        // ARIA attributes
+        knob.setAttribute('role', 'slider');
+        knob.setAttribute('tabindex', '0');
+        knob.setAttribute('aria-valuemin', min);
+        knob.setAttribute('aria-valuemax', max);
+        knob.setAttribute('aria-valuenow', value);
+        knob.setAttribute('aria-label', param.replace(/-/g, ' '));
 
         updateKnobRotation(knob, value, min, max, isLog);
         updateKnobValue(param, value);
@@ -113,6 +121,7 @@ export function initKnobs() {
         }
 
         knob.dataset.value = value;
+        knob.setAttribute('aria-valuenow', value);
         updateKnobRotation(knob, value, min, max, isLog);
         updateKnobValue(param, value);
         applyParameter(param, value);
@@ -148,4 +157,32 @@ export function initKnobs() {
         }
     }, { passive: false });
     document.addEventListener('touchend', onDragEnd);
+
+    // Keyboard navigation (Arrow Up/Down on focused knob)
+    document.addEventListener('keydown', (e) => {
+        const knob = document.activeElement;
+        if (!knob || !knob.classList.contains('knob')) return;
+        if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+
+        e.preventDefault();
+        const param = knob.dataset.param;
+        const min = parseFloat(knob.dataset.min);
+        const max = parseFloat(knob.dataset.max);
+        const isLog = knob.dataset.log === 'true';
+        const currentValue = parseFloat(knob.dataset.value);
+
+        const step = (max - min) / 100;
+        const delta = e.key === 'ArrowUp' ? step : -step;
+        let value = Math.max(min, Math.min(max, currentValue + delta));
+
+        if (param.includes('octave')) {
+            value = Math.round(value);
+        }
+
+        knob.dataset.value = value;
+        knob.setAttribute('aria-valuenow', value);
+        updateKnobRotation(knob, value, min, max, isLog);
+        updateKnobValue(param, value);
+        applyParameter(param, value);
+    });
 }

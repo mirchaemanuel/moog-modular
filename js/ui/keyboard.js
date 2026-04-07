@@ -1,6 +1,6 @@
 // Moog Modular Synthesizer - Piano Keyboard
 
-import { state } from '../state.js';
+import { state, setOctaveShift } from '../state.js';
 import { noteOn, noteOff } from '../audio/voice-manager.js';
 
 // Keyboard mapping constants
@@ -115,12 +115,12 @@ export function createKeyboard() {
         const key = e.key.toLowerCase();
 
         if (key === 'z') {
-            state.octaveShift = Math.max(state.octaveShift - 1, -2);
+            setOctaveShift(Math.max(state.octaveShift - 1, -2));
             updateKeyboardLabels();
             return;
         }
         if (key === 'x') {
-            state.octaveShift = Math.min(state.octaveShift + 1, 2);
+            setOctaveShift(Math.min(state.octaveShift + 1, 2));
             updateKeyboardLabels();
             return;
         }
