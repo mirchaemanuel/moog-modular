@@ -742,3 +742,217 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+/* ===== Mobile Layout ===== */
+@media (max-width: 600px) {
+    .header {
+        padding: 12px 10px;
+    }
+
+    .header h1 {
+        font-size: 1.5em;
+        letter-spacing: 4px;
+    }
+
+    .header p {
+        font-size: 0.7em;
+    }
+
+    /* Hide keyboard shortcuts info — not relevant on mobile */
+    .info-panel {
+        display: none;
+    }
+
+    /* Compact preset/demo buttons */
+    .preset-section {
+        gap: 6px;
+        padding: 8px;
+    }
+
+    .preset-btn {
+        padding: 6px 10px;
+        font-size: 0.75em;
+    }
+
+    .demo-section {
+        gap: 5px;
+        padding: 6px 8px;
+    }
+
+    .demo-btn {
+        padding: 5px 8px;
+        font-size: 0.7em;
+    }
+
+    .demo-label {
+        font-size: 0.7em;
+    }
+
+    .preset-manager {
+        gap: 5px;
+        padding: 6px 8px;
+    }
+
+    .preset-manager-label {
+        font-size: 0.75em;
+    }
+
+    .preset-manager-btn {
+        padding: 5px 8px;
+        font-size: 0.7em;
+    }
+
+    .preset-select {
+        min-width: 100px;
+        padding: 5px 8px;
+        font-size: 0.7em;
+    }
+
+    /* 2-column module grid */
+    .synth-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .module {
+        padding: 6px 4px;
+        min-width: 0 !important;
+        overflow: hidden;
+    }
+
+    .module-title {
+        font-size: 0.65em;
+        margin-bottom: 6px;
+        letter-spacing: 1px;
+    }
+
+    /* Compact knobs for 2-col fit */
+    .knob {
+        width: 44px;
+        height: 44px;
+    }
+
+    .knob::after {
+        top: 5px;
+        width: 3px;
+        height: 14px;
+    }
+
+    .knob.small {
+        width: 36px;
+        height: 36px;
+    }
+
+    .knob.small::after {
+        top: 4px;
+        width: 2px;
+        height: 11px;
+    }
+
+    .knob-container {
+        margin: 4px 2px;
+    }
+
+    .knob-label {
+        font-size: 0.55em;
+        margin-top: 3px;
+    }
+
+    .knob-value {
+        font-size: 0.5em;
+    }
+
+    .knob-row {
+        gap: 0;
+    }
+
+    /* Compact wave selectors */
+    .wave-selector {
+        gap: 3px;
+        margin: 5px 0;
+    }
+
+    .wave-btn {
+        width: 28px;
+        height: 24px;
+    }
+
+    .wave-btn svg {
+        width: 16px;
+        height: 12px;
+    }
+
+    /* Compact LFO destination dropdown */
+    .slider-container {
+        margin: 5px;
+    }
+
+    .slider-container select {
+        font-size: 0.7em;
+        padding: 3px;
+    }
+
+    .slider-label {
+        font-size: 0.6em;
+    }
+
+    /* LED smaller */
+    .led {
+        width: 8px;
+        height: 8px;
+        margin: 3px auto;
+    }
+
+    /* Oscilloscope spans full width */
+    .oscilloscope {
+        grid-column: 1 / -1;
+        margin: 0;
+        padding: 6px;
+    }
+
+    /* ADSR canvas smaller */
+    canvas[id$="-env-display"] {
+        height: 40px;
+    }
+
+    /* Keyboard: scrollable, bigger keys */
+    .keyboard-container {
+        padding: 10px 0;
+        margin-top: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .keyboard {
+        height: 120px;
+        margin: 0;
+        padding: 0 10px 15px;
+    }
+
+    .white-key {
+        width: 36px;
+        height: 100px;
+    }
+
+    .white-key:active, .white-key.pressed {
+        height: 98px;
+    }
+
+    .black-key {
+        width: 24px;
+        height: 62px;
+    }
+
+    .black-key:active, .black-key.pressed {
+        height: 60px;
+    }
+
+    /* Footer compact */
+    footer {
+        padding: 10px;
+        font-size: 0.75em;
+        margin-top: 8px;
+    }
+}

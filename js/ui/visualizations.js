@@ -2,26 +2,6 @@
 
 import { analyser } from '../state.js';
 
-let scopeAnimId = null;
-
-/**
- * Start the oscilloscope rendering loop (call when audio starts)
- */
-export function startScope() {
-    if (scopeAnimId !== null) return;
-    drawOscilloscope();
-}
-
-/**
- * Stop the oscilloscope rendering loop (call when all voices released)
- */
-export function stopScope() {
-    if (scopeAnimId !== null) {
-        cancelAnimationFrame(scopeAnimId);
-        scopeAnimId = null;
-    }
-}
-
 /**
  * Draw the oscilloscope waveform display
  */
@@ -37,7 +17,7 @@ export function drawOscilloscope() {
     let dataArray = null;
 
     function draw() {
-        scopeAnimId = requestAnimationFrame(draw);
+        requestAnimationFrame(draw);
 
         if (!analyser) return;
 
