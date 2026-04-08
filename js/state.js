@@ -47,6 +47,7 @@ export const state = {
     lfo2: { wave: 'sine', rate: 1, amount: 0, dest: 'filter' },
     effects: { delayTime: 300, delayFeedback: 30, delayMix: 0, reverbMix: 15 },
     master: { volume: 0.7, glide: 0 },
+    extIn: 0,
     octaveShift: 0
 };
 
