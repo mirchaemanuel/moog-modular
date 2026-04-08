@@ -12,6 +12,7 @@ import { initKnobs } from './ui/knobs.js';
 import { createKeyboard } from './ui/keyboard.js';
 import { drawEnvelope } from './ui/visualizations.js';
 import { initWaveSelectors } from './ui/wave-selectors.js';
+import { initPatchCables } from './ui/patch-cables.js';
 
 // Presets
 import { loadPreset, initPresetButtons } from './presets/preset-manager.js';
@@ -55,6 +56,9 @@ function init() {
     // Draw initial envelopes
     drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
     drawEnvelope('amp-env-display', state.ampEnv.attack, state.ampEnv.decay, state.ampEnv.sustain, state.ampEnv.release);
+
+    // Initialize patch cables
+    initPatchCables();
 }
 
 // Initialize when DOM is ready
