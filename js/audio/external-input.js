@@ -3,6 +3,7 @@
 
 import { audioCtx, state, masterGain } from '../state.js';
 import { initAudio } from './audio-context.js';
+import { updateKnobRotation } from '../ui/knobs.js';
 
 let micStream = null;
 let micSource = null;
@@ -73,11 +74,23 @@ export function stopMic() {
 /**
  * Toggle microphone on/off
  */
-export function toggleMic() {
+export async function toggleMic() {
     if (isActive) {
         stopMic();
     } else {
-        startMic();
+        await startMic();
+        // Auto-set ext-in to 80 if it's at 0 so user hears something immediately
+        if (isActive && state.extIn === 0) {
+            state.extIn = 80;
+            if (extGain) extGain.gain.value = 0.8;
+            const knob = document.querySelector('[data-param="ext-in"]');
+            if (knob) {
+                knob.dataset.value = 80;
+                updateKnobRotation(knob, 80, 0, 100, false);
+                const valEl = document.getElementById('ext-in-val');
+                if (valEl) valEl.textContent = '80';
+            }
+        }
     }
     return isActive;
 }

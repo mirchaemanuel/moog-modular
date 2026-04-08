@@ -58,8 +58,8 @@ function init() {
     // Initialize mic button
     const micBtn = document.getElementById('mic-btn');
     if (micBtn) {
-        micBtn.addEventListener('click', () => {
-            toggleMic();
+        micBtn.addEventListener('click', async () => {
+            await toggleMic();
             micBtn.classList.toggle('recording', isMicActive());
             micBtn.textContent = isMicActive() ? '🎤 ON' : '🎤 MIC';
         });
