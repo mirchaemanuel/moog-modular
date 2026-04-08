@@ -7,6 +7,7 @@ import {
     lfo1Osc, lfo1Gain, lfo2Osc, lfo2Gain
 } from '../state.js';
 import { drawEnvelope } from '../ui/visualizations.js';
+import { setExtGainLevel, updateExtFilter } from './external-input.js';
 
 const OSC_GAIN_SCALE = 0.3;
 const CENTS_PER_SEMITONE = 1200;
@@ -121,13 +122,18 @@ export function applyParameter(param, value) {
             state.mixer.noise = value;
             if (noiseGain) noiseGain.gain.value = (value / 100) * OSC_GAIN_SCALE;
             break;
+        case 'ext-in':
+            setExtGainLevel(value);
+            break;
         case 'cutoff':
             state.filter.cutoff = value;
             updateActiveVoices();
+            updateExtFilter();
             break;
         case 'resonance':
             state.filter.resonance = value;
             updateActiveVoices();
+            updateExtFilter();
             break;
         case 'filter-env': state.filter.envAmount = value; break;
         case 'filter-kbd': state.filter.kbdTrack = value; break;
