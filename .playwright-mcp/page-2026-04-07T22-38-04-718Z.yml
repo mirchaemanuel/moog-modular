@@ -1,0 +1,332 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - heading "MOOG MODULAR i" [level=1] [ref=e3]:
+      - text: MOOG MODULAR
+      - link "i" [ref=e4] [cursor=pointer]:
+        - /url: https://a80.it/blog/web-audio-api-building-a-moog-style-modular-synthesizer-in-javascript
+    - paragraph [ref=e5]: by Mircha Emanuel D'Angelo - Use keyboard A-L or click the keys
+  - generic [ref=e6]:
+    - generic [ref=e7]: "MY PRESETS:"
+    - combobox [ref=e8] [cursor=pointer]:
+      - option "-- Select --" [selected]
+    - button "LOAD" [ref=e9] [cursor=pointer]
+    - button "💾 SAVE" [ref=e10] [cursor=pointer]
+    - button "🗑️ DEL" [ref=e11] [cursor=pointer]
+  - generic [ref=e12]:
+    - button "INIT" [ref=e13] [cursor=pointer]
+    - button "BASS" [ref=e14] [cursor=pointer]
+    - button "LEAD" [ref=e15] [cursor=pointer]
+    - button "PAD" [ref=e16] [cursor=pointer]
+    - button "BRASS" [ref=e17] [cursor=pointer]
+    - button "STRINGS" [ref=e18] [cursor=pointer]
+    - button "WEIRD" [ref=e19] [cursor=pointer]
+  - generic [ref=e20]:
+    - generic [ref=e21]: "DEMO:"
+    - button "ARPEGGIO" [ref=e22] [cursor=pointer]
+    - button "SPACE" [ref=e23] [cursor=pointer]
+    - button "ITALO" [ref=e24] [cursor=pointer]
+    - button "BLADE RUNNER" [ref=e25] [cursor=pointer]
+    - button "BLUE MONDAY" [ref=e26] [cursor=pointer]
+    - button "STRANGER" [ref=e27] [cursor=pointer]
+    - button "DAFT PUNK" [ref=e28] [cursor=pointer]
+    - button "BEETHOVEN 5th" [ref=e29] [cursor=pointer]
+    - button "THE CHASE" [ref=e30] [cursor=pointer]
+    - button "STOP" [ref=e31] [cursor=pointer]
+    - generic [ref=e32]: "REC:"
+    - button "🔴 REC" [ref=e33] [cursor=pointer]
+    - generic [ref=e34]: "SONG:"
+    - button "📥 IMPORT" [ref=e35] [cursor=pointer]
+    - button "▶️ PLAY" [ref=e36] [cursor=pointer]
+  - generic [ref=e37]:
+    - generic [ref=e38]:
+      - generic [ref=e39]: VCO 1
+      - generic [ref=e41]:
+        - button "Sawtooth" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]
+        - button "Square" [ref=e45] [cursor=pointer]:
+          - img [ref=e46]
+        - button "Triangle" [ref=e48] [cursor=pointer]:
+          - img [ref=e49]
+        - button "Sine" [ref=e51] [cursor=pointer]:
+          - img [ref=e52]
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - slider "vco1 octave" [ref=e56] [cursor=pointer]
+          - generic [ref=e57]: Octave
+          - generic [ref=e58]: "0"
+        - generic [ref=e59]:
+          - slider "vco1 detune" [ref=e60] [cursor=pointer]
+          - generic [ref=e61]: Detune
+          - generic [ref=e62]: "0"
+      - generic [ref=e64]:
+        - slider "vco1 pw" [ref=e65] [cursor=pointer]
+        - generic [ref=e66]: PW
+        - generic [ref=e67]: "50"
+    - generic [ref=e68]:
+      - generic [ref=e69]: VCO 2
+      - generic [ref=e71]:
+        - button "Sawtooth" [ref=e72] [cursor=pointer]:
+          - img [ref=e73]
+        - button "Square" [ref=e75] [cursor=pointer]:
+          - img [ref=e76]
+        - button "Triangle" [ref=e78] [cursor=pointer]:
+          - img [ref=e79]
+        - button "Sine" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - slider "vco2 octave" [ref=e86] [cursor=pointer]
+          - generic [ref=e87]: Octave
+          - generic [ref=e88]: "0"
+        - generic [ref=e89]:
+          - slider "vco2 detune" [ref=e90] [cursor=pointer]
+          - generic [ref=e91]: Detune
+          - generic [ref=e92]: "5"
+      - generic [ref=e94]:
+        - slider "vco2 pw" [ref=e95] [cursor=pointer]
+        - generic [ref=e96]: PW
+        - generic [ref=e97]: "50"
+    - generic [ref=e98]:
+      - generic [ref=e99]: VCO 3
+      - generic [ref=e101]:
+        - button "Sawtooth" [ref=e102] [cursor=pointer]:
+          - img [ref=e103]
+        - button "Square" [ref=e105] [cursor=pointer]:
+          - img [ref=e106]
+        - button "Triangle" [ref=e108] [cursor=pointer]:
+          - img [ref=e109]
+        - button "Sine" [ref=e111] [cursor=pointer]:
+          - img [ref=e112]
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - slider "vco3 octave" [ref=e116] [cursor=pointer]
+          - generic [ref=e117]: Octave
+          - generic [ref=e118]: "-1"
+        - generic [ref=e119]:
+          - slider "vco3 detune" [ref=e120] [cursor=pointer]
+          - generic [ref=e121]: Detune
+          - generic [ref=e122]: "0"
+      - generic [ref=e124]:
+        - slider "vco3 pw" [ref=e125] [cursor=pointer]
+        - generic [ref=e126]: PW
+        - generic [ref=e127]: "50"
+    - generic [ref=e128]:
+      - generic [ref=e129]: MIXER
+      - generic [ref=e131]:
+        - slider "mix1" [ref=e132] [cursor=pointer]
+        - generic [ref=e133]: VCO1
+        - generic [ref=e134]: "80"
+      - generic [ref=e136]:
+        - slider "mix2" [ref=e137] [cursor=pointer]
+        - generic [ref=e138]: VCO2
+        - generic [ref=e139]: "60"
+      - generic [ref=e141]:
+        - slider "mix3" [ref=e142] [cursor=pointer]
+        - generic [ref=e143]: VCO3
+        - generic [ref=e144]: "40"
+      - generic [ref=e146]:
+        - slider "noise" [ref=e147] [cursor=pointer]
+        - generic [ref=e148]: Noise
+        - generic [ref=e149]: "0"
+    - generic [ref=e150]:
+      - generic [ref=e151]: LADDER FILTER
+      - generic [ref=e153]:
+        - generic [ref=e154]:
+          - slider "cutoff" [ref=e155] [cursor=pointer]
+          - generic [ref=e156]: Cutoff
+          - generic [ref=e157]: 2.0kHz
+        - generic [ref=e158]:
+          - slider "resonance" [ref=e159] [cursor=pointer]
+          - generic [ref=e160]: Resonance
+          - generic [ref=e161]: "30"
+      - generic [ref=e162]:
+        - generic [ref=e163]:
+          - slider "filter env" [ref=e164] [cursor=pointer]
+          - generic [ref=e165]: Env Amt
+          - generic [ref=e166]: "50"
+        - generic [ref=e167]:
+          - slider "filter kbd" [ref=e168] [cursor=pointer]
+          - generic [ref=e169]: Kbd Track
+          - generic [ref=e170]: "50"
+    - generic [ref=e171]:
+      - generic [ref=e172]: FILTER ENVELOPE
+      - generic [ref=e173]:
+        - generic [ref=e174]:
+          - slider "f attack" [ref=e175] [cursor=pointer]
+          - generic [ref=e176]: A
+          - generic [ref=e177]: 10ms
+        - generic [ref=e178]:
+          - slider "f decay" [ref=e179] [cursor=pointer]
+          - generic [ref=e180]: D
+          - generic [ref=e181]: 300ms
+        - generic [ref=e182]:
+          - slider "f sustain" [ref=e183] [cursor=pointer]
+          - generic [ref=e184]: S
+          - generic [ref=e185]: 30%
+        - generic [ref=e186]:
+          - slider "f release" [ref=e187] [cursor=pointer]
+          - generic [ref=e188]: R
+          - generic [ref=e189]: 500ms
+      - generic "Filter envelope display" [ref=e190]
+    - generic [ref=e191]:
+      - generic [ref=e192]: AMP ENVELOPE
+      - generic [ref=e193]:
+        - generic [ref=e194]:
+          - slider "a attack" [ref=e195] [cursor=pointer]
+          - generic [ref=e196]: A
+          - generic [ref=e197]: 10ms
+        - generic [ref=e198]:
+          - slider "a decay" [ref=e199] [cursor=pointer]
+          - generic [ref=e200]: D
+          - generic [ref=e201]: 200ms
+        - generic [ref=e202]:
+          - slider "a sustain" [ref=e203] [cursor=pointer]
+          - generic [ref=e204]: S
+          - generic [ref=e205]: 70%
+        - generic [ref=e206]:
+          - slider "a release" [ref=e207] [cursor=pointer]
+          - generic [ref=e208]: R
+          - generic [ref=e209]: 300ms
+      - generic "Amp envelope display" [ref=e210]
+    - generic [ref=e211]:
+      - generic [ref=e212]: LFO 1
+      - generic [ref=e213]:
+        - button "Sine" [ref=e214] [cursor=pointer]:
+          - img [ref=e215]
+        - button "Triangle" [ref=e217] [cursor=pointer]:
+          - img [ref=e218]
+        - button "Square" [ref=e220] [cursor=pointer]:
+          - img [ref=e221]
+        - button "Sawtooth" [ref=e223] [cursor=pointer]:
+          - img [ref=e224]
+      - generic [ref=e226]:
+        - generic [ref=e227]:
+          - slider "lfo1 rate" [ref=e228] [cursor=pointer]
+          - generic [ref=e229]: Rate
+          - generic [ref=e230]: 5.0 Hz
+        - generic [ref=e231]:
+          - slider "lfo1 amount" [ref=e232] [cursor=pointer]
+          - generic [ref=e233]: Amount
+          - generic [ref=e234]: "0"
+      - generic [ref=e235]:
+        - combobox [ref=e236]:
+          - option "Pitch" [selected]
+          - option "Filter"
+          - option "Amp"
+          - option "Pulse Width"
+        - generic [ref=e237]: Destination
+    - generic [ref=e238]:
+      - generic [ref=e239]: LFO 2
+      - generic [ref=e240]:
+        - button "Sine" [ref=e241] [cursor=pointer]:
+          - img [ref=e242]
+        - button "Triangle" [ref=e244] [cursor=pointer]:
+          - img [ref=e245]
+        - button "Square" [ref=e247] [cursor=pointer]:
+          - img [ref=e248]
+        - button "Sawtooth" [ref=e250] [cursor=pointer]:
+          - img [ref=e251]
+      - generic [ref=e253]:
+        - generic [ref=e254]:
+          - slider "lfo2 rate" [ref=e255] [cursor=pointer]
+          - generic [ref=e256]: Rate
+          - generic [ref=e257]: 1.0 Hz
+        - generic [ref=e258]:
+          - slider "lfo2 amount" [ref=e259] [cursor=pointer]
+          - generic [ref=e260]: Amount
+          - generic [ref=e261]: "0"
+      - generic [ref=e262]:
+        - combobox [ref=e263]:
+          - option "Filter" [selected]
+          - option "Pitch"
+          - option "Amp"
+          - option "Pulse Width"
+        - generic [ref=e264]: Destination
+    - generic [ref=e265]:
+      - generic [ref=e266]: EFFECTS
+      - generic [ref=e267]:
+        - generic [ref=e268]:
+          - slider "delay time" [ref=e269] [cursor=pointer]
+          - generic [ref=e270]: Delay
+          - generic [ref=e271]: 300ms
+        - generic [ref=e272]:
+          - slider "delay feedback" [ref=e273] [cursor=pointer]
+          - generic [ref=e274]: Feedback
+          - generic [ref=e275]: 30%
+      - generic [ref=e276]:
+        - generic [ref=e277]:
+          - slider "delay mix" [ref=e278] [cursor=pointer]
+          - generic [ref=e279]: Dly Mix
+          - generic [ref=e280]: 0%
+        - generic [ref=e281]:
+          - slider "reverb mix" [ref=e282] [cursor=pointer]
+          - generic [ref=e283]: Reverb
+          - generic [ref=e284]: 15%
+    - generic [ref=e285]:
+      - generic [ref=e286]: MASTER
+      - generic [ref=e288]:
+        - slider "glide" [ref=e289] [cursor=pointer]
+        - generic [ref=e290]: Glide
+        - generic [ref=e291]: 0ms
+      - generic [ref=e293]:
+        - slider "master vol" [ref=e294] [cursor=pointer]
+        - generic [ref=e295]: Volume
+        - generic [ref=e296]: "70"
+    - generic [ref=e298]:
+      - generic [ref=e299]: SCOPE
+      - generic "Oscilloscope waveform display" [ref=e300]
+      - generic [ref=e301]: WAVEFORM
+  - generic [ref=e303]:
+    - generic [ref=e304] [cursor=pointer]:
+      - generic: C2
+    - generic [ref=e316] [cursor=pointer]:
+      - generic: C3
+    - generic [ref=e328] [cursor=pointer]:
+      - generic: C4
+      - generic: A
+    - generic [ref=e329] [cursor=pointer]:
+      - generic: W
+    - generic [ref=e330] [cursor=pointer]:
+      - generic: S
+    - generic [ref=e331] [cursor=pointer]:
+      - generic: E
+    - generic [ref=e332] [cursor=pointer]:
+      - generic: D
+    - generic [ref=e333] [cursor=pointer]:
+      - generic: F
+    - generic [ref=e334] [cursor=pointer]:
+      - generic: T
+    - generic [ref=e335] [cursor=pointer]:
+      - generic: G
+    - generic [ref=e336] [cursor=pointer]:
+      - generic: "Y"
+    - generic [ref=e337] [cursor=pointer]:
+      - generic: H
+    - generic [ref=e338] [cursor=pointer]:
+      - generic: U
+    - generic [ref=e339] [cursor=pointer]:
+      - generic: J
+    - generic [ref=e340] [cursor=pointer]:
+      - generic: C5
+      - generic: K
+    - generic [ref=e341] [cursor=pointer]:
+      - generic: O
+    - generic [ref=e342] [cursor=pointer]:
+      - generic: L
+    - generic [ref=e352] [cursor=pointer]:
+      - generic: C6
+  - generic [ref=e353]:
+    - paragraph [ref=e354]: "Computer Keyboard: A W S E D F T G Y H U J K O L"
+    - paragraph [ref=e355]: Z / X Octave Down/Up | Drag knobs to adjust | Click presets to load sounds
+  - contentinfo [ref=e356]:
+    - text: Made with ❤️ by
+    - link "Mircha Emanuel D'Angelo" [ref=e357] [cursor=pointer]:
+      - /url: https://a80.it
+    - text: "|"
+    - link "GitHub" [ref=e358] [cursor=pointer]:
+      - /url: https://github.com/mirchaemanuel/moog-modular
+    - link "CC BY-SA 4.0 CC BY-SA 4.0" [ref=e359] [cursor=pointer]:
+      - /url: https://creativecommons.org/licenses/by-sa/4.0/
+      - img "CC BY-SA 4.0" [ref=e360]
+      - text: CC BY-SA 4.0
+    - generic [ref=e361]: vdev

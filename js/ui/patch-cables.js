@@ -28,11 +28,15 @@ function getElementAnchor(el, position = 'bottom') {
 }
 
 function drawCable(fromX, fromY, toX, toY, style) {
-    const dx = Math.abs(toX - fromX);
-    const dy = toY - fromY;
-    const sag = Math.max(30, dx * 0.3) + Math.max(0, -dy * 0.2);
-    const midX = (fromX + toX) / 2;
-    const midY = Math.max(fromY, toY) + sag;
+    // Cubic bezier: exits downward from source, enters downward into destination
+    // Creates a smooth hanging cable without wild swings
+    const dist = Math.hypot(toX - fromX, toY - fromY);
+    const hang = Math.min(dist * 0.25, 80); // controlled sag, max 80px
+
+    const cp1x = fromX;
+    const cp1y = fromY + hang;
+    const cp2x = toX;
+    const cp2y = toY + hang;
 
     ctx.save();
     ctx.strokeStyle = style.color;
@@ -43,7 +47,7 @@ function drawCable(fromX, fromY, toX, toY, style) {
     ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(fromX, fromY);
-    ctx.quadraticCurveTo(midX, midY, toX, toY);
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, toX, toY);
     ctx.stroke();
     ctx.restore();
 }
@@ -108,7 +112,6 @@ function resizeCanvas() {
 function drawAll() {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawFixedCables();
     drawLfoCables();
 }
 
