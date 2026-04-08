@@ -261,23 +261,54 @@ body {
 }
 
 .patch-point {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, #333, #111);
     border: 2px solid #666;
     cursor: pointer;
-    position: relative;
     transition: all 0.2s;
+    display: inline-block;
+}
+
+.patch-point[data-type="output"] {
+    border-color: #888;
+}
+
+.patch-point[data-module="lfo1"],
+.patch-point[data-module="lfo1"].connected {
+    border-color: #00ffff;
+}
+
+.patch-point[data-module="lfo2"],
+.patch-point[data-module="lfo2"].connected {
+    border-color: #ff00ff;
 }
 
 .patch-point:hover {
-    border-color: #ffd700;
     box-shadow: 0 0 10px rgba(255,215,0,0.5);
+    transform: scale(1.2);
+}
+
+.patch-point.active {
+    box-shadow: 0 0 15px rgba(255,215,0,0.8);
+    transform: scale(1.3);
 }
 
 .patch-point.connected {
     background: radial-gradient(circle at 30% 30%, #ffd700, #996600);
+}
+
+.patch-point[data-type="input"].connected-lfo1 {
+    background: radial-gradient(circle at 30% 30%, #00ffff, #006666);
+    border-color: #00ffff;
+    box-shadow: 0 0 6px rgba(0,255,255,0.4);
+}
+
+.patch-point[data-type="input"].connected-lfo2 {
+    background: radial-gradient(circle at 30% 30%, #ff00ff, #660066);
+    border-color: #ff00ff;
+    box-shadow: 0 0 6px rgba(255,0,255,0.4);
 }
 
 .patch-point-label {
@@ -954,5 +985,14 @@ footer a:hover {
         padding: 10px;
         font-size: 0.75em;
         margin-top: 8px;
+    }
+
+    .patch-point {
+        width: 20px;
+        height: 20px;
+    }
+
+    .patch-point-label {
+        font-size: 0.5em;
     }
 }
