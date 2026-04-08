@@ -2,6 +2,7 @@
 
 import { state, lfo1Osc, lfo2Osc } from '../state.js';
 import { updateActiveWaveforms } from '../audio/parameters.js';
+import { syncFromDropdown } from './patch-cables.js';
 
 /**
  * Initialize wave selector buttons for VCOs and LFOs
@@ -43,6 +44,7 @@ export function initWaveSelectors() {
     if (lfo1Dest) {
         lfo1Dest.addEventListener('change', (e) => {
             state.lfo1.dest = e.target.value;
+            syncFromDropdown(1, e.target.value);
         });
     }
 
@@ -50,6 +52,7 @@ export function initWaveSelectors() {
     if (lfo2Dest) {
         lfo2Dest.addEventListener('change', (e) => {
             state.lfo2.dest = e.target.value;
+            syncFromDropdown(2, e.target.value);
         });
     }
 }

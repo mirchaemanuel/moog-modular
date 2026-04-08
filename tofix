@@ -1,0 +1,35 @@
+  ---
+  CRITICO (3)
+
+  1. Memory leak nei nodi audio (voice-manager.js:67,97-148,157-175) — Le connessioni LFO, noiseGain e i nodi filter/VCA/gains non vengono mai disconnessi al rilascio della voce. Dopo molte note suonate si   accumulano centinaia di nodi orfani nel grafo audio.
+  2. Race condition nel rilascio voci (voice-manager.js:170-174) — La voce viene rimossa dalla Map immediatamente ma il cleanup avviene dopo un setTimeout. Se la stessa nota viene risuonata prima che scada,   coesistono due voci audio e la precedente diventa irraggiungibile.
+  3. Allocazione Uint8Array ad ogni frame (visualizations.js:22) — Il buffer viene creato ~60 volte/secondo dentro requestAnimationFrame, creando pressione costante sul GC.
+
+  ---
+  MEDIO (11)
+
+  4. NoiseGain condiviso — Connesso al filtro di ogni voce: con 5 note premute il rumore e 5x piu forte
+  5. 25 handler mousemove/mouseup su document — Uno per ogni knob, invece di un singolo handler delegato
+  6. onclick inline nei preset — Unici bottoni che usano onclick + window.loadPreset globale, incoerente col resto
+  7. Nessun touch support sui knob — Su mobile i knob sono inutilizzabili
+  8. updateActiveEnvelopes interrompe le rampe — cancelScheduledValues causa click audio se la nota e in fase attack/decay
+  9. Convenzione mixer doppia (0-1 nello state, 0-100 nei preset/knob) — Ambiguita che prima o poi causera bug
+  10. Delay feedback senza clamp — Un preset user con delayFeedback > 100 causa auto-oscillazione
+  11. Nessuna validazione nel song parser — Valori negativi o enormi non vengono filtrati
+  12. Oscilloscopio gira sempre — requestAnimationFrame loop perpetuo anche senza audio
+  13. Import inutilizzati in demo-player.js e pattern fragili in wave-selectors.js
+
+  ---
+  BASSO (11)
+
+  14. Zero accessibilita — Nessun role="slider", aria-*, o navigazione keyboard sui knob
+  15. Canvas con dimensioni fisse — Non responsive su schermi piccoli
+  16. Codice LFO duplicato — I blocchi LFO1/LFO2 in voice-manager.js sono quasi identici (DRY)
+  17. Scheduling duplicato — schedulePattern e scheduleNotes quasi identiche
+  18. Magic numbers — 0.3, 261.63, /5, /1200 senza nomi significativi
+  19. loadPreset e loadPresetData quasi identiche — Da unificare
+  20. State mutato direttamente da keyboard.js (incoerente col pattern setter)
+  21. Timeout non tracciato nel song player per auto-reset pulsante
+  22. Manca theme-color meta per il browser mobile
+  23. Candidato PWA perfetto — Nessun manifest.json o service worker
+
