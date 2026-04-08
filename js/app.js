@@ -24,6 +24,9 @@ import { initSongPlayer } from './sequencer/song-player.js';
 // Recorder
 import { initRecording } from './recorder/audio-recorder.js';
 
+// External Input
+import { toggleMic, isMicActive } from './audio/external-input.js';
+
 /**
  * Initialize the application
  */
@@ -51,6 +54,16 @@ function init() {
 
     // Initialize song player
     initSongPlayer();
+
+    // Initialize mic button
+    const micBtn = document.getElementById('mic-btn');
+    if (micBtn) {
+        micBtn.addEventListener('click', async () => {
+            await toggleMic();
+            micBtn.classList.toggle('recording', isMicActive());
+            micBtn.textContent = isMicActive() ? '🎤 ON' : '🎤 MIC';
+        });
+    }
 
     // Draw initial envelopes
     drawEnvelope('filter-env-display', state.filterEnv.attack, state.filterEnv.decay, state.filterEnv.sustain, state.filterEnv.release);
